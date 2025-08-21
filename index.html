@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dunia Komposisi - Game Matematika</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: sparkle 2s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        .floating-score {
+            animation: floatUp 1s ease-out forwards;
+        }
+        
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .door-open {
+            animation: doorOpen 1s ease-out forwards;
+        }
+        
+        @keyframes doorOpen {
+            0% { transform: scaleX(1); }
+            100% { transform: scaleX(0); }
+        }
+        
+        .rainbow-glow {
+            animation: rainbowGlow 2s infinite;
+        }
+        
+        @keyframes rainbowGlow {
+            0% { box-shadow: 0 0 20px #ff0080; }
+            25% { box-shadow: 0 0 20px #00ff80; }
+            50% { box-shadow: 0 0 20px #8000ff; }
+            75% { box-shadow: 0 0 20px #ff8000; }
+            100% { box-shadow: 0 0 20px #ff0080; }
+        }
+        
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle 1s ease-out forwards;
+        }
+        
+        @keyframes particle {
+            0% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0) translateY(-100px); }
+        }
+        
+        .wizard-bounce {
+            animation: wizardBounce 3s ease-in-out infinite;
+        }
+        
+        @keyframes wizardBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .machine-pulse {
+            animation: machinePulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes machinePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .teacher-glow {
+            animation: teacherGlow 3s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .teacher-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
+            background-size: 400% 400%;
+            border-radius: 50%;
+            z-index: -1;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes teacherGlow {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+            }
+            50% { 
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            }
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 overflow-x-hidden">
+    <!-- Sparkles Background -->
+    <div id="sparkles-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    
+    <!-- Game Container -->
+    <div class="relative z-10 min-h-screen p-4">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-black/20 backdrop-blur-sm rounded-2xl p-4">
+            <!-- Teacher Photo -->
+            <div class="flex items-center gap-4 mb-4 md:mb-0">
+                <div class="relative">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-4 border-gradient-to-r from-yellow-400 to-pink-500 p-1 bg-gradient-to-r from-yellow-400 to-pink-500 shadow-lg teacher-glow">
+                        <img 
+                            src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/guru%20gita.png" 
+                            alt="Guru Matematika" 
+                            class="w-full h-full object-cover rounded-full bg-white"
+                            onerror="this.src=''; this.alt='Foto guru tidak dapat dimuat'; this.style.display='none';"
+                        >
+                    </div>
+                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <span class="text-xs">✨</span>
+                    </div>
+                </div>
+                <h1 class="text-2xl md:text-4xl font-bold text-white text-center">
+                    🧙‍♂️ Dunia Komposisi
+                </h1>
+            </div>
+            
+            <!-- Game Stats -->
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="bg-red-500/80 px-4 py-2 rounded-full text-white font-semibold">
+                    ❤️ <span id="lives">3</span>
+                </div>
+                <div class="bg-yellow-500/80 px-4 py-2 rounded-full text-white font-semibold">
+                    ⭐ <span id="score">0</span>
+                </div>
+                <div class="bg-green-500/80 px-4 py-2 rounded-full text-white font-semibold">
+                    📊 Level <span id="current-level">1</span>/4
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="mb-6 bg-black/20 backdrop-blur-sm rounded-2xl p-4">
+            <div class="bg-gray-700 rounded-full h-4 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-green-400 to-blue-500 h-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+        </div>
+        
+        <!-- Main Game Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Wizard Guide -->
+            <div class="lg:col-span-1">
+                <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-6 text-center">
+                    <div class="text-6xl mb-4 wizard-bounce">🧙‍♂️</div>
+                    <div id="wizard-dialog" class="bg-purple-600/80 rounded-xl p-4 text-white text-sm md:text-base">
+                        Selamat datang di Dunia Komposisi! Mari belajar fungsi komposisi bersama. Jawab soal dengan benar untuk membuka pintu ajaib!
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Game Content -->
+            <div class="lg:col-span-2">
+                <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
+                    <!-- Composition Machine -->
+                    <div class="text-center mb-6">
+                        <div id="composition-machine" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-6 machine-pulse relative">
+                            <div class="text-4xl mb-2">⚙️</div>
+                            <div class="text-white font-bold">Mesin Komposisi</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Question Area -->
+                    <div class="bg-white/10 rounded-xl p-6 mb-6">
+                        <h3 class="text-xl font-bold text-white mb-4">Soal:</h3>
+                        <div id="question" class="text-lg text-white mb-4 font-mono bg-black/30 p-4 rounded-lg">
+                            <!-- Question will be inserted here -->
+                        </div>
+                        
+                        <!-- Answer Input -->
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <input 
+                                type="number" 
+                                id="answer-input" 
+                                placeholder="Masukkan jawaban..."
+                                class="flex-1 px-4 py-3 rounded-lg bg-white/20 text-white placeholder-gray-300 border-2 border-transparent focus:border-yellow-400 focus:outline-none text-lg"
+                            >
+                            <button 
+                                id="submit-btn"
+                                class="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
+                            >
+                                Submit ✨
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hint Area -->
+                    <div id="hint-area" class="bg-blue-500/20 rounded-xl p-4 mb-6">
+                        <div class="text-blue-200 text-sm">
+                            💡 <span id="hint-text">Ingat: (f ∘ g)(x) = f(g(x))</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Magic Door -->
+                    <div class="text-center">
+                        <div id="magic-door" class="inline-block relative">
+                            <div class="text-8xl transform-gpu transition-all duration-1000">🚪</div>
+                            <div class="absolute inset-0 text-8xl opacity-0" id="open-door">✨</div>
+                        </div>
+                        <div class="text-white mt-2">Pintu Ajaib</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Restart Button -->
+        <div class="text-center mt-6">
+            <button 
+                id="restart-btn"
+                class="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
+            >
+                🔄 Restart Game
+            </button>
+        </div>
+        
+        <!-- Footer -->
+        <div class="text-center mt-8 mb-4">
+            <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4">
+                <div class="text-white/80 text-sm md:text-base font-medium">
+                    © 2025 <span class="text-yellow-400 font-bold">mathnology</span>
+                </div>
+                <div class="text-white/60 text-xs mt-1">
+                    🧮 Belajar Matematika dengan Teknologi
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
+            <div class="text-6xl mb-4">🎉</div>
+            <h2 class="text-2xl font-bold text-white mb-4">Jawaban Benar!</h2>
+            <p class="text-white mb-6">Pintu ajaib terbuka! Lanjut ke level berikutnya.</p>
+            <button id="next-level-btn" class="px-6 py-3 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                Level Selanjutnya ➡️
+            </button>
+        </div>
+    </div>
+    
+    <!-- Game Over Modal -->
+    <div id="gameover-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-red-500 to-purple-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
+            <div class="text-6xl mb-4">💀</div>
+            <h2 class="text-2xl font-bold text-white mb-4">Game Over!</h2>
+            <p class="text-white mb-6">Nyawa habis! Jangan menyerah, coba lagi!</p>
+            <button id="restart-gameover-btn" class="px-6 py-3 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                Main Lagi 🔄
+            </button>
+        </div>
+    </div>
+    
+    <!-- Victory Modal -->
+    <div id="victory-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
+            <div class="text-6xl mb-4">👑</div>
+            <h2 class="text-2xl font-bold text-white mb-4">Selamat!</h2>
+            <p class="text-white mb-4">Anda telah menyelesaikan semua level!</p>
+            <p class="text-white mb-6">Skor Akhir: <span id="final-score" class="font-bold">0</span></p>
+            <button id="restart-victory-btn" class="px-6 py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                Main Lagi 🎮
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class CompositionGame {
+            constructor() {
+                this.currentLevel = 1;
+                this.lives = 3;
+                this.score = 0;
+                this.maxLevel = 4;
+                
+                this.levels = [
+                    {
+                        question: "Diketahui f(x) = 2x + 1 dan g(x) = x²<br>Hitunglah (f ∘ g)(2)",
+                        answer: 9,
+                        hint: "Hitung g(2) terlebih dahulu, lalu masukkan ke f(x)",
+                        dialog: "Level 1: Mari mulai dengan komposisi sederhana!"
+                    },
+                    {
+                        question: "Diketahui f(x) = x + 3 dan (f ∘ g)(4) = 8<br>Berapakah g(4)?",
+                        answer: 5,
+                        hint: "Jika f(g(4)) = 8 dan f(x) = x + 3, maka g(4) + 3 = 8",
+                        dialog: "Level 2: Sekarang kita cari fungsi yang hilang!"
+                    },
+                    {
+                        question: "Diketahui (f ∘ g)(x) = 2x² + 1 dan g(x) = x²<br>Berapakah f(3)?",
+                        answer: 7,
+                        hint: "Jika g(x) = x², maka f(x²) = 2x² + 1, berarti f(x) = 2x + 1",
+                        dialog: "Level 3: Tantangan yang lebih rumit menanti!"
+                    },
+                    {
+                        question: "Diketahui f(x) = x + 1, g(x) = 2x, h(x) = x²<br>Hitunglah (f ∘ g ∘ h)(2)",
+                        answer: 9,
+                        hint: "Hitung dari dalam: h(2), lalu g(h(2)), lalu f(g(h(2)))",
+                        dialog: "Level 4: Komposisi tiga fungsi! Ini yang terakhir!"
+                    }
+                ];
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.loadLevel();
+                this.createSparkles();
+            }
+            
+            initializeElements() {
+                this.livesEl = document.getElementById('lives');
+                this.scoreEl = document.getElementById('score');
+                this.currentLevelEl = document.getElementById('current-level');
+                this.progressBar = document.getElementById('progress-bar');
+                this.questionEl = document.getElementById('question');
+                this.answerInput = document.getElementById('answer-input');
+                this.submitBtn = document.getElementById('submit-btn');
+                this.hintText = document.getElementById('hint-text');
+                this.wizardDialog = document.getElementById('wizard-dialog');
+                this.magicDoor = document.getElementById('magic-door');
+                this.compositionMachine = document.getElementById('composition-machine');
+                
+                // Modals
+                this.successModal = document.getElementById('success-modal');
+                this.gameoverModal = document.getElementById('gameover-modal');
+                this.victoryModal = document.getElementById('victory-modal');
+                this.finalScoreEl = document.getElementById('final-score');
+            }
+            
+            setupEventListeners() {
+                this.submitBtn.addEventListener('click', () => this.checkAnswer());
+                this.answerInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.checkAnswer();
+                });
+                
+                document.getElementById('next-level-btn').addEventListener('click', () => this.nextLevel());
+                document.getElementById('restart-btn').addEventListener('click', () => this.restartGame());
+                document.getElementById('restart-gameover-btn').addEventListener('click', () => this.restartGame());
+                document.getElementById('restart-victory-btn').addEventListener('click', () => this.restartGame());
+            }
+            
+            loadLevel() {
+                const level = this.levels[this.currentLevel - 1];
+                this.questionEl.innerHTML = level.question;
+                this.hintText.textContent = level.hint;
+                this.wizardDialog.textContent = level.dialog;
+                this.answerInput.value = '';
+                this.answerInput.focus();
+                
+                // Update UI
+                this.currentLevelEl.textContent = this.currentLevel;
+                this.progressBar.style.width = `${(this.currentLevel / this.maxLevel) * 100}%`;
+            }
+            
+            checkAnswer() {
+                const userAnswer = parseInt(this.answerInput.value);
+                const correctAnswer = this.levels[this.currentLevel - 1].answer;
+                
+                if (userAnswer === correctAnswer) {
+                    this.handleCorrectAnswer();
+                } else {
+                    this.handleWrongAnswer();
+                }
+            }
+            
+            handleCorrectAnswer() {
+                this.score += 100;
+                this.scoreEl.textContent = this.score;
+                
+                // Visual effects
+                this.createParticles('gold');
+                this.showFloatingScore('+100');
+                this.openMagicDoor();
+                this.compositionMachine.classList.add('rainbow-glow');
+                
+                setTimeout(() => {
+                    this.compositionMachine.classList.remove('rainbow-glow');
+                    this.showSuccessModal();
+                }, 1500);
+            }
+            
+            handleWrongAnswer() {
+                this.lives--;
+                this.livesEl.textContent = this.lives;
+                
+                // Visual effects
+                this.createParticles('red');
+                this.answerInput.classList.add('shake');
+                this.magicDoor.classList.add('shake');
+                
+                setTimeout(() => {
+                    this.answerInput.classList.remove('shake');
+                    this.magicDoor.classList.remove('shake');
+                }, 500);
+                
+                if (this.lives <= 0) {
+                    setTimeout(() => this.showGameOverModal(), 1000);
+                } else {
+                    this.wizardDialog.textContent = `Jawaban salah! Coba lagi. Sisa nyawa: ${this.lives}`;
+                }
+            }
+            
+            nextLevel() {
+                this.hideModal(this.successModal);
+                this.closeMagicDoor();
+                
+                if (this.currentLevel >= this.maxLevel) {
+                    setTimeout(() => this.showVictoryModal(), 500);
+                } else {
+                    this.currentLevel++;
+                    setTimeout(() => this.loadLevel(), 500);
+                }
+            }
+            
+            openMagicDoor() {
+                const door = this.magicDoor.querySelector('.text-8xl');
+                const openDoor = document.getElementById('open-door');
+                
+                door.classList.add('door-open');
+                setTimeout(() => {
+                    door.style.opacity = '0';
+                    openDoor.style.opacity = '1';
+                }, 500);
+            }
+            
+            closeMagicDoor() {
+                const door = this.magicDoor.querySelector('.text-8xl');
+                const openDoor = document.getElementById('open-door');
+                
+                door.classList.remove('door-open');
+                door.style.opacity = '1';
+                openDoor.style.opacity = '0';
+            }
+            
+            createParticles(color) {
+                const colors = {
+                    gold: '#ffd700',
+                    red: '#ff4444'
+                };
+                
+                for (let i = 0; i < 15; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.backgroundColor = colors[color];
+                    particle.style.left = Math.random() * window.innerWidth + 'px';
+                    particle.style.top = Math.random() * window.innerHeight + 'px';
+                    particle.style.animationDelay = Math.random() * 0.5 + 's';
+                    
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            }
+            
+            showFloatingScore(text) {
+                const floatingScore = document.createElement('div');
+                floatingScore.className = 'floating-score fixed text-2xl font-bold text-yellow-400 z-50';
+                floatingScore.textContent = text;
+                floatingScore.style.left = '50%';
+                floatingScore.style.top = '30%';
+                floatingScore.style.transform = 'translateX(-50%)';
+                
+                document.body.appendChild(floatingScore);
+                
+                setTimeout(() => floatingScore.remove(), 1000);
+            }
+            
+            createSparkles() {
+                const container = document.getElementById('sparkles-container');
+                
+                setInterval(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle';
+                    sparkle.style.left = Math.random() * window.innerWidth + 'px';
+                    sparkle.style.top = Math.random() * window.innerHeight + 'px';
+                    sparkle.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    container.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 2000);
+                }, 300);
+            }
+            
+            showSuccessModal() {
+                this.successModal.classList.remove('hidden');
+                this.successModal.classList.add('flex');
+                this.successModal.querySelector('div').style.transform = 'scale(1)';
+            }
+            
+            showGameOverModal() {
+                this.gameoverModal.classList.remove('hidden');
+                this.gameoverModal.classList.add('flex');
+                this.gameoverModal.querySelector('div').style.transform = 'scale(1)';
+            }
+            
+            showVictoryModal() {
+                this.finalScoreEl.textContent = this.score;
+                this.victoryModal.classList.remove('hidden');
+                this.victoryModal.classList.add('flex');
+                this.victoryModal.querySelector('div').style.transform = 'scale(1)';
+            }
+            
+            hideModal(modal) {
+                modal.querySelector('div').style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+            
+            restartGame() {
+                this.currentLevel = 1;
+                this.lives = 3;
+                this.score = 0;
+                
+                this.livesEl.textContent = this.lives;
+                this.scoreEl.textContent = this.score;
+                
+                this.hideModal(this.gameoverModal);
+                this.hideModal(this.victoryModal);
+                this.closeMagicDoor();
+                
+                setTimeout(() => this.loadLevel(), 500);
+            }
+        }
+        
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new CompositionGame();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972db6bce2f56034',t:'MTc1NTgxNjg4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
