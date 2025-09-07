@@ -3,1079 +3,984 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dunia Komposisi - Game Matematika</title>
+    <title>🎮 Function Composition Quest</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; }
-        
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #ffd700;
-            border-radius: 50%;
-            animation: sparkle 2s infinite;
-        }
-        
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-        
-        .floating-score {
-            animation: floatUp 1s ease-out forwards;
-        }
-        
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-50px); }
-        }
-        
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        
-        .door-open {
-            animation: doorOpen 1s ease-out forwards;
-        }
-        
-        @keyframes doorOpen {
-            0% { transform: scaleX(1); }
-            100% { transform: scaleX(0); }
-        }
-        
-        .rainbow-glow {
-            animation: rainbowGlow 2s infinite;
-        }
-        
-        @keyframes rainbowGlow {
-            0% { box-shadow: 0 0 20px #ff0080; }
-            25% { box-shadow: 0 0 20px #00ff80; }
-            50% { box-shadow: 0 0 20px #8000ff; }
-            75% { box-shadow: 0 0 20px #ff8000; }
-            100% { box-shadow: 0 0 20px #ff0080; }
-        }
-        
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particle 1s ease-out forwards;
-        }
-        
-        @keyframes particle {
-            0% { opacity: 1; transform: scale(1) translateY(0); }
-            100% { opacity: 0; transform: scale(0) translateY(-100px); }
-        }
-        
-        .wizard-bounce {
-            animation: wizardBounce 3s ease-in-out infinite;
-        }
-        
-        @keyframes wizardBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .machine-pulse {
-            animation: machinePulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes machinePulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .teacher-glow {
-            animation: teacherGlow 3s ease-in-out infinite;
-            position: relative;
-        }
-        
-        .teacher-glow::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #dda0dd);
-            background-size: 400% 400%;
-            border-radius: 50%;
-            z-index: -1;
-            animation: gradientShift 3s ease infinite;
-        }
-        
-        @keyframes teacherGlow {
-            0%, 100% { 
-                transform: scale(1);
-                filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
             }
-            50% { 
-                transform: scale(1.05);
-                filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
-            }
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-    </style>
+        };
+    </script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 overflow-x-hidden">
-    <!-- Sparkles Background -->
-    <div id="sparkles-container" class="fixed inset-0 pointer-events-none z-0"></div>
-    
-    <!-- Game Container -->
-    <div class="relative z-10 min-h-screen p-4">
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-black/20 backdrop-blur-sm rounded-2xl p-4">
-            <!-- Teacher Photo -->
-            <div class="flex items-center gap-4 mb-4 md:mb-0">
-                <div class="relative">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-4 border-gradient-to-r from-yellow-400 to-pink-500 p-1 bg-gradient-to-r from-yellow-400 to-pink-500 shadow-lg teacher-glow">
-                        <img 
-                            src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/guru%20gita.png" 
-                            alt="Guru Matematika" 
-                            class="w-full h-full object-cover rounded-full bg-white"
-                            onerror="this.src=''; this.alt='Foto guru tidak dapat dimuat'; this.style.display='none';"
-                        >
-                    </div>
-                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                        <span class="text-xs">✨</span>
-                    </div>
-                </div>
-                <h1 class="text-2xl md:text-4xl font-bold text-white text-center">
-                    🧙‍♂️ Dunia Komposisi
-                </h1>
-            </div>
-            
-            <!-- Game Stats -->
-            <div class="flex flex-wrap gap-4 items-center">
-                <div class="bg-red-500/80 px-4 py-2 rounded-full text-white font-semibold">
-                    ❤️ <span id="lives">3</span>
-                </div>
-                <div class="bg-yellow-500/80 px-4 py-2 rounded-full text-white font-semibold">
-                    ⭐ <span id="score">0</span>
-                </div>
-                <div class="bg-green-500/80 px-4 py-2 rounded-full text-white font-semibold">
-                    📊 Level <span id="current-level">1</span>/4
-                </div>
-            </div>
+<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen text-white">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Game Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-4">
+                🎮 Function Composition Quest
+            </h1>
+            <p class="text-xl text-blue-200">Petualangan Seru Menguasai Fungsi Komposisi!</p>
         </div>
-        
-        <!-- Progress Bar -->
-        <div class="mb-6 bg-black/20 backdrop-blur-sm rounded-2xl p-4">
-            <div class="bg-gray-700 rounded-full h-4 overflow-hidden">
-                <div id="progress-bar" class="bg-gradient-to-r from-green-400 to-blue-500 h-full transition-all duration-500" style="width: 25%"></div>
-            </div>
-        </div>
-        
-        <!-- Learning Material Section -->
-        <div id="material-section" class="mb-6 bg-black/20 backdrop-blur-sm rounded-2xl p-6">
-            <!-- Material Page 1 -->
-            <div id="material-page-1">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">📚 Materi Pembelajaran - Halaman 1</h2>
-                    <p class="text-blue-200">Mari pelajari konsep Fungsi Komposisi terlebih dahulu!</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <!-- Material Image -->
-                    <div class="order-2 lg:order-1">
-                        <div class="bg-white/10 rounded-xl p-4 text-center">
-                            <img 
-                                src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/komposisi.jpg" 
-                                alt="Materi Fungsi Komposisi" 
-                                class="w-full h-auto rounded-lg shadow-lg border-2 border-yellow-400/50"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                            >
-                            <div style="display: none;" class="text-white p-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg">
-                                <div class="text-4xl mb-4">📖</div>
-                                <p>Materi pembelajaran tidak dapat dimuat</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Explanation -->
-                    <div class="order-1 lg:order-2 space-y-4">
-                        <div class="bg-gradient-to-r from-purple-600/80 to-blue-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🎯 Apa itu Fungsi Komposisi?
-                            </h3>
-                            <p class="text-white/90 text-sm md:text-base leading-relaxed">
-                                Fungsi komposisi adalah operasi yang menggabungkan dua fungsi menjadi satu fungsi baru. 
-                                Jika kita punya fungsi f dan g, maka komposisi (f ∘ g)(x) = f(g(x)).
-                            </p>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-green-600/80 to-teal-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🔄 Cara Menghitung
-                            </h3>
-                            <div class="text-white/90 text-sm md:text-base space-y-2">
-                                <p><strong>Langkah 1:</strong> Hitung nilai g(x) terlebih dahulu</p>
-                                <p><strong>Langkah 2:</strong> Masukkan hasil g(x) ke dalam fungsi f</p>
-                                <p><strong>Contoh:</strong> Jika f(x) = 2x + 1 dan g(x) = x², maka (f ∘ g)(3) = f(g(3)) = f(9) = 2(9) + 1 = 19</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-orange-600/80 to-red-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                ⚠️ Penting Diingat!
-                            </h3>
-                            <div class="text-white/90 text-sm md:text-base space-y-1">
-                                <p>• (f ∘ g)(x) ≠ (g ∘ f)(x) (tidak komutatif)</p>
-                                <p>• Selalu hitung dari dalam ke luar</p>
-                                <p>• Domain harus sesuai untuk kedua fungsi</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Navigation Buttons Page 1 -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
-                    <button 
-                        id="next-material-btn"
-                        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
-                    >
-                        📖 Halaman Selanjutnya ➡️
-                    </button>
-                    <button 
-                        id="start-practice-btn"
-                        class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                    >
-                        🚀 Siap Berlatih!
-                    </button>
-                </div>
-            </div>
 
-            <!-- Material Page 2 -->
-            <div id="material-page-2" style="display: none;">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">📚 Materi Pembelajaran - Halaman 2</h2>
-                    <p class="text-blue-200">Lanjutan materi dan contoh soal fungsi komposisi!</p>
+        <!-- Game Stats -->
+        <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-8 backdrop-blur-sm">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                <div class="bg-green-500 bg-opacity-20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-green-400" id="score">0</div>
+                    <div class="text-sm text-green-300">Skor</div>
                 </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <!-- Material Image 2 -->
-                    <div class="order-2 lg:order-1">
-                        <div class="bg-white/10 rounded-xl p-4 text-center">
-                            <img 
-                                src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/komposisi2.jpg" 
-                                alt="Materi Fungsi Komposisi Lanjutan" 
-                                class="w-full h-auto rounded-lg shadow-lg border-2 border-green-400/50"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                            >
-                            <div style="display: none;" class="text-white p-8 bg-gradient-to-br from-green-600 to-teal-600 rounded-lg">
-                                <div class="text-4xl mb-4">📊</div>
-                                <p>Materi pembelajaran lanjutan tidak dapat dimuat</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional Explanation -->
-                    <div class="order-1 lg:order-2 space-y-4">
-                        <div class="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                📊 Contoh Soal Lengkap
-                            </h3>
-                            <p class="text-white/90 text-sm md:text-base leading-relaxed">
-                                Pelajari berbagai variasi soal fungsi komposisi dari yang sederhana hingga kompleks. 
-                                Setiap soal memiliki langkah penyelesaian yang jelas dan mudah dipahami.
-                            </p>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-emerald-600/80 to-green-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🧮 Strategi Penyelesaian
-                            </h3>
-                            <div class="text-white/90 text-sm md:text-base space-y-2">
-                                <p><strong>Tip 1:</strong> Identifikasi fungsi mana yang berada di dalam</p>
-                                <p><strong>Tip 2:</strong> Substitusi nilai dengan hati-hati</p>
-                                <p><strong>Tip 3:</strong> Periksa kembali hasil perhitungan</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-gradient-to-r from-violet-600/80 to-purple-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🎯 Siap untuk Tantangan?
-                            </h3>
-                            <div class="text-white/90 text-sm md:text-base space-y-1">
-                                <p>• Pahami konsep dasar terlebih dahulu</p>
-                                <p>• Latihan dengan berbagai tipe soal</p>
-                                <p>• Jangan takut membuat kesalahan!</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-blue-500 bg-opacity-20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-blue-400" id="level">1</div>
+                    <div class="text-sm text-blue-300">Level</div>
                 </div>
-                
-                <!-- Navigation Buttons Page 2 -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
-                    <button 
-                        id="prev-material-btn"
-                        class="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105"
-                    >
-                        ⬅️ Halaman Sebelumnya
-                    </button>
-                    <button 
-                        id="next-material-btn-2"
-                        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
-                    >
-                        📖 Halaman Selanjutnya ➡️
-                    </button>
-                    <button 
-                        id="start-practice-btn-2"
-                        class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                    >
-                        🚀 Siap Berlatih!
-                    </button>
+                <div class="bg-yellow-500 bg-opacity-20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-yellow-400" id="lives">❤️❤️❤️</div>
+                    <div class="text-sm text-yellow-300">Nyawa</div>
                 </div>
-            </div>
-
-            <!-- Material Page 3 -->
-            <div id="material-page-3" style="display: none;">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">📚 Materi Pembelajaran - Halaman 3</h2>
-                    <p class="text-pink-200">Latihan Soal dan Strategi Lanjutan!</p>
+                <div class="bg-purple-500 bg-opacity-20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-purple-400" id="streak">0</div>
+                    <div class="text-sm text-purple-300">Streak</div>
                 </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <!-- Material Image 3 with Interactive Elements -->
-                    <div class="order-2 lg:order-1">
-                        <div class="bg-white/10 rounded-xl p-4 text-center relative overflow-hidden">
-                            <!-- Animated Border -->
-                            <div class="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 rounded-xl opacity-75 animate-pulse"></div>
-                            <div class="absolute inset-1 bg-black/20 rounded-lg"></div>
-                            
-                            <div class="relative z-10">
-                                <img 
-                                    src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/komposisi3.jpg" 
-                                    alt="Latihan Soal Fungsi Komposisi" 
-                                    class="w-full h-auto rounded-lg shadow-lg border-2 border-pink-400/50 transform hover:scale-105 transition-all duration-300"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                                >
-                                <div style="display: none;" class="text-white p-8 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg">
-                                    <div class="text-4xl mb-4">🎯</div>
-                                    <p>Latihan soal tidak dapat dimuat</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Floating Icons -->
-                            <div class="absolute top-4 right-4 text-2xl animate-bounce">🌟</div>
-                            <div class="absolute bottom-4 left-4 text-2xl animate-pulse">🎯</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Interactive Learning Content -->
-                    <div class="order-1 lg:order-2 space-y-4">
-                        <!-- Interactive Quiz Preview -->
-                        <div class="bg-gradient-to-r from-pink-600/80 to-rose-600/80 rounded-xl p-4 transform hover:scale-105 transition-all duration-300">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🎯 Latihan Interaktif
-                            </h3>
-                            <p class="text-white/90 text-sm md:text-base leading-relaxed mb-3">
-                                Siap menghadapi tantangan? Mari uji pemahaman Anda dengan soal-soal yang menarik!
-                            </p>
-                            <div class="bg-black/30 rounded-lg p-3">
-                                <div class="text-yellow-300 text-sm font-mono">
-                                    Preview: f(x) = 2x + 1, g(x) = x²<br>
-                                    Hitung (f ∘ g)(3) = ?
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Progress Tracker -->
-                        <div class="bg-gradient-to-r from-purple-600/80 to-indigo-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                📈 Tingkat Kesulitan
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
-                                    <span class="text-white/90 text-sm">Level 1: Komposisi Dasar</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-4 h-4 bg-yellow-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
-                                    <span class="text-white/90 text-sm">Level 2: Mencari Fungsi</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-4 h-4 bg-orange-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
-                                    <span class="text-white/90 text-sm">Level 3: Komposisi Terbalik</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-4 h-4 bg-red-400 rounded-full animate-pulse" style="animation-delay: 0.6s;"></div>
-                                    <span class="text-white/90 text-sm">Level 4: Triple Komposisi</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Motivational Section -->
-                        <div class="bg-gradient-to-r from-cyan-600/80 to-teal-600/80 rounded-xl p-4 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-teal-400/20 animate-pulse"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                    🚀 Siap Menjadi Master?
-                                </h3>
-                                <div class="text-white/90 text-sm md:text-base space-y-2">
-                                    <p>✨ <strong>Kunci Sukses:</strong> Latihan konsisten</p>
-                                    <p>🎯 <strong>Target:</strong> Menyelesaikan semua level</p>
-                                    <p>🏆 <strong>Reward:</strong> Pemahaman yang mendalam</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Special Call-to-Action -->
-                <div class="mt-8 text-center">
-                    <div class="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 rounded-2xl p-6 border-2 border-yellow-400/50">
-                        <div class="text-4xl mb-4 animate-bounce">🎮</div>
-                        <h3 class="text-2xl font-bold text-white mb-3">Waktunya Bermain!</h3>
-                        <p class="text-white/80 mb-6">
-                            Anda telah mempelajari semua materi. Sekarang saatnya menguji kemampuan Anda 
-                            dalam game interaktif yang menantang!
-                        </p>
-                        
-                        <!-- Animated Stats Preview -->
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <div class="bg-red-500/30 rounded-lg p-3">
-                                <div class="text-2xl mb-1">❤️</div>
-                                <div class="text-white text-sm">3 Nyawa</div>
-                            </div>
-                            <div class="bg-yellow-500/30 rounded-lg p-3">
-                                <div class="text-2xl mb-1">⭐</div>
-                                <div class="text-white text-sm">Skor Tinggi</div>
-                            </div>
-                            <div class="bg-green-500/30 rounded-lg p-3">
-                                <div class="text-2xl mb-1">🏆</div>
-                                <div class="text-white text-sm">4 Level</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Navigation Buttons Page 3 -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
-                    <button 
-                        id="prev-material-btn-2"
-                        class="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105"
-                    >
-                        ⬅️ Halaman Sebelumnya
-                    </button>
-                    <button 
-                        id="next-material-btn-3"
-                        class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
-                    >
-                        📖 Halaman Selanjutnya ➡️
-                    </button>
-                    <button 
-                        id="start-practice-btn-3"
-                        class="px-8 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                    >
-                        🚀 Siap Berlatih!
-                    </button>
-                </div>
-            </div>
-
-            <!-- Material Page 4 -->
-            <div id="material-page-4" style="display: none;">
-                <div class="text-center mb-6">
-                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">📚 Materi Pembelajaran - Halaman 4</h2>
-                    <p class="text-emerald-200">Persiapan Akhir dan Challenge Mode!</p>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-                    <!-- Material Image 4 with Special Effects -->
-                    <div class="order-2 lg:order-1">
-                        <div class="bg-white/10 rounded-xl p-4 text-center relative overflow-hidden">
-                            <!-- Multi-layer Animated Border -->
-                            <div class="absolute inset-0 bg-gradient-to-r from-emerald-500 via-cyan-500 to-blue-500 rounded-xl opacity-75 animate-pulse"></div>
-                            <div class="absolute inset-0 bg-gradient-to-l from-purple-500 via-pink-500 to-red-500 rounded-xl opacity-50 animate-pulse" style="animation-delay: 1s;"></div>
-                            <div class="absolute inset-1 bg-black/20 rounded-lg"></div>
-                            
-                            <div class="relative z-10">
-                                <img 
-                                    src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/komposisi4.jpg" 
-                                    alt="Master Level Fungsi Komposisi" 
-                                    class="w-full h-auto rounded-lg shadow-lg border-2 border-emerald-400/50 transform hover:scale-105 transition-all duration-300"
-                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                                >
-                                <div style="display: none;" class="text-white p-8 bg-gradient-to-br from-emerald-600 to-cyan-600 rounded-lg">
-                                    <div class="text-4xl mb-4">🏆</div>
-                                    <p>Master level materi tidak dapat dimuat</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Advanced Floating Icons -->
-                            <div class="absolute top-2 right-2 text-2xl animate-bounce">🏆</div>
-                            <div class="absolute bottom-2 left-2 text-2xl animate-pulse">⚡</div>
-                            <div class="absolute top-2 left-2 text-xl animate-spin">🌟</div>
-                            <div class="absolute bottom-2 right-2 text-xl animate-bounce" style="animation-delay: 0.5s;">🎯</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Master Level Content -->
-                    <div class="order-1 lg:order-2 space-y-4">
-                        <!-- Master Challenge Preview -->
-                        <div class="bg-gradient-to-r from-emerald-600/80 to-teal-600/80 rounded-xl p-4 transform hover:scale-105 transition-all duration-300 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-teal-400/20 animate-pulse"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                    🏆 Master Challenge Mode
-                                </h3>
-                                <p class="text-white/90 text-sm md:text-base leading-relaxed mb-3">
-                                    Tantangan terakhir! Uji kemampuan Anda dengan soal-soal komposisi fungsi tingkat master yang menggabungkan semua konsep.
-                                </p>
-                                <div class="bg-black/30 rounded-lg p-3">
-                                    <div class="text-cyan-300 text-sm font-mono">
-                                        Ultimate: f(x) = 3x - 2, g(x) = x² + 1, h(x) = 2x<br>
-                                        Hitung (f ∘ g ∘ h)(x) = ?
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Achievement System -->
-                        <div class="bg-gradient-to-r from-purple-600/80 to-indigo-600/80 rounded-xl p-4">
-                            <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                🎖️ Sistem Achievement
-                            </h3>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 bg-bronze rounded-full flex items-center justify-center text-xs">🥉</div>
-                                    <span class="text-white/90 text-sm">Bronze: Selesaikan Level 1-2</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-xs">🥈</div>
-                                    <span class="text-white/90 text-sm">Silver: Selesaikan Level 3</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-xs animate-pulse">🥇</div>
-                                    <span class="text-white/90 text-sm">Gold: Selesaikan Level 4</span>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    <div class="w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-xs animate-bounce">💎</div>
-                                    <span class="text-white/90 text-sm">Diamond: Perfect Score!</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Final Motivation -->
-                        <div class="bg-gradient-to-r from-cyan-600/80 to-blue-600/80 rounded-xl p-4 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 animate-pulse"></div>
-                            <div class="relative z-10">
-                                <h3 class="text-xl font-bold text-white mb-3 flex items-center">
-                                    🚀 Siap Menjadi Legend?
-                                </h3>
-                                <div class="text-white/90 text-sm md:text-base space-y-2">
-                                    <p>⚡ <strong>Power Up:</strong> Gunakan semua strategi yang dipelajari</p>
-                                    <p>🎯 <strong>Focus:</strong> Tetap tenang dan teliti</p>
-                                    <p>🏆 <strong>Victory:</strong> Raih skor sempurna!</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Epic Call-to-Action -->
-                <div class="mt-8 text-center">
-                    <div class="bg-gradient-to-r from-purple-400/20 to-cyan-400/20 rounded-2xl p-6 border-2 border-purple-400/50 relative overflow-hidden">
-                        <!-- Background Animation -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-cyan-600/10 animate-pulse"></div>
-                        
-                        <div class="relative z-10">
-                            <div class="text-5xl mb-4 animate-bounce">🎮👑</div>
-                            <h3 class="text-3xl font-bold text-white mb-3">ULTIMATE CHALLENGE!</h3>
-                            <p class="text-white/80 mb-6 text-lg">
-                                Anda telah menguasai semua materi. Sekarang waktunya membuktikan kehebatan Anda 
-                                dalam tantangan ultimate yang akan menguji batas kemampuan!
-                            </p>
-                            
-                            <!-- Epic Stats Preview -->
-                            <div class="grid grid-cols-4 gap-4 mb-6">
-                                <div class="bg-red-500/30 rounded-lg p-3 transform hover:scale-105 transition-all">
-                                    <div class="text-2xl mb-1">❤️</div>
-                                    <div class="text-white text-sm font-bold">3 Lives</div>
-                                </div>
-                                <div class="bg-yellow-500/30 rounded-lg p-3 transform hover:scale-105 transition-all">
-                                    <div class="text-2xl mb-1">⭐</div>
-                                    <div class="text-white text-sm font-bold">High Score</div>
-                                </div>
-                                <div class="bg-green-500/30 rounded-lg p-3 transform hover:scale-105 transition-all">
-                                    <div class="text-2xl mb-1">🏆</div>
-                                    <div class="text-white text-sm font-bold">4 Levels</div>
-                                </div>
-                                <div class="bg-purple-500/30 rounded-lg p-3 transform hover:scale-105 transition-all">
-                                    <div class="text-2xl mb-1">💎</div>
-                                    <div class="text-white text-sm font-bold">Legend</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Navigation Buttons Page 4 -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
-                    <button 
-                        id="prev-material-btn-3"
-                        class="px-6 py-3 bg-gradient-to-r from-gray-500 to-gray-600 text-white font-bold rounded-lg hover:from-gray-600 hover:to-gray-700 transition-all duration-300 transform hover:scale-105"
-                    >
-                        ⬅️ Halaman Sebelumnya
-                    </button>
-                    <button 
-                        id="start-practice-btn-4"
-                        class="px-16 py-6 bg-gradient-to-r from-purple-500 via-pink-500 via-cyan-500 to-emerald-500 text-white font-bold rounded-3xl hover:from-purple-600 hover:via-pink-600 hover:via-cyan-600 hover:to-emerald-600 transition-all duration-300 transform hover:scale-110 shadow-2xl animate-pulse text-xl border-2 border-white/30"
-                    >
-                        🏆 ULTIMATE CHALLENGE! 🏆
-                    </button>
+                <div class="bg-orange-500 bg-opacity-20 rounded-lg p-4">
+                    <div class="text-2xl font-bold text-orange-400" id="progress">1/3</div>
+                    <div class="text-sm text-orange-300">Progress</div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Game Area -->
-        <div id="game-area" class="grid grid-cols-1 lg:grid-cols-3 gap-6" style="display: none;">
-            <!-- Wizard Guide -->
-            <div class="lg:col-span-1">
-                <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-6 text-center">
-                    <div class="text-6xl mb-4 wizard-bounce">🧙‍♂️</div>
-                    <div id="wizard-dialog" class="bg-purple-600/80 rounded-xl p-4 text-white text-sm md:text-base">
-                        Selamat datang di Dunia Komposisi! Mari belajar fungsi komposisi bersama. Jawab soal dengan benar untuk membuka pintu ajaib!
+        <!-- Game Menu -->
+        <div id="gameMenu" class="space-y-6">
+            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm">
+                <h2 class="text-3xl font-bold text-center mb-8 text-yellow-400">🎯 Pilih Mode Permainan</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Speed Challenge -->
+                    <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('speed')">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h3 class="text-xl font-bold mb-2">Speed Challenge</h3>
+                            <p class="text-sm opacity-90 mb-4">3 soal per level, waktu terbatas!</p>
+                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                                <p class="text-xs">• 3 soal mudah-sedang</p>
+                                <p class="text-xs">• Timer 60 detik</p>
+                                <p class="text-xs">• Bonus kecepatan</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adventure Mode -->
+                    <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('adventure')">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">🗺️</div>
+                            <h3 class="text-xl font-bold mb-2">Adventure Mode</h3>
+                            <p class="text-sm opacity-90 mb-4">3 soal per lokasi dengan cerita!</p>
+                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                                <p class="text-xs">• Cerita RPG menarik</p>
+                                <p class="text-xs">• 3 soal per lokasi</p>
+                                <p class="text-xs">• Power-ups tersedia</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Boss Battle -->
+                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('boss')">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">👹</div>
+                            <h3 class="text-xl font-bold mb-2">Boss Battle</h3>
+                            <p class="text-sm opacity-90 mb-4">3 serangan untuk kalahkan boss!</p>
+                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                                <p class="text-xs">• Soal sulit</p>
+                                <p class="text-xs">• 3 serangan per boss</p>
+                                <p class="text-xs">• Reward besar</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Game Content -->
-            <div class="lg:col-span-2">
-                <div class="bg-black/30 backdrop-blur-sm rounded-2xl p-6">
-                    <!-- Composition Machine -->
-                    <div class="text-center mb-6">
-                        <div id="composition-machine" class="inline-block bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-6 machine-pulse relative">
-                            <div class="text-4xl mb-2">⚙️</div>
-                            <div class="text-white font-bold">Mesin Komposisi</div>
-                        </div>
+
+            <!-- Tutorial Section -->
+            <div class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold text-center mb-4 text-yellow-400">📚 Cara Bermain</h3>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
+                        <h4 class="text-lg font-bold text-blue-400 mb-2">$(f \circ g)(x)$</h4>
+                        <p class="text-sm mb-2">$f(g(x))$ - Substitusi g(x) ke f(x)</p>
+                        <p class="text-xs text-gray-300">Contoh: $f(x) = 2x$, $g(x) = x+1$</p>
+                        <p class="text-xs text-gray-300">$(f \circ g)(x) = 2(x+1) = 2x+2$</p>
                     </div>
-                    
-                    <!-- Question Area -->
-                    <div class="bg-white/10 rounded-xl p-6 mb-6">
-                        <h3 class="text-xl font-bold text-white mb-4">Soal:</h3>
-                        <div id="question" class="text-lg text-white mb-4 font-mono bg-black/30 p-4 rounded-lg">
-                            <!-- Question will be inserted here -->
-                        </div>
-                        
-                        <!-- Answer Input -->
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <input 
-                                type="number" 
-                                id="answer-input" 
-                                placeholder="Masukkan jawaban..."
-                                class="flex-1 px-4 py-3 rounded-lg bg-white/20 text-white placeholder-gray-300 border-2 border-transparent focus:border-yellow-400 focus:outline-none text-lg"
-                            >
-                            <button 
-                                id="submit-btn"
-                                class="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold rounded-lg hover:from-green-600 hover:to-blue-600 transition-all duration-300 transform hover:scale-105"
-                            >
-                                Submit ✨
-                            </button>
-                        </div>
+                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
+                        <h4 class="text-lg font-bold text-green-400 mb-2">$(g \circ f)(x)$</h4>
+                        <p class="text-sm mb-2">$g(f(x))$ - Substitusi f(x) ke g(x)</p>
+                        <p class="text-xs text-gray-300">Contoh: $f(x) = 2x$, $g(x) = x+1$</p>
+                        <p class="text-xs text-gray-300">$(g \circ f)(x) = 2x+1$</p>
                     </div>
-                    
-                    <!-- Hint Area -->
-                    <div id="hint-area" class="bg-blue-500/20 rounded-xl p-4 mb-6">
-                        <div class="text-blue-200 text-sm">
-                            💡 <span id="hint-text">Ingat: (f ∘ g)(x) = f(g(x))</span>
-                        </div>
+                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
+                        <h4 class="text-lg font-bold text-purple-400 mb-2">$(f \circ g)(a)$</h4>
+                        <p class="text-sm mb-2">Nilai numerik komposisi</p>
+                        <p class="text-xs text-gray-300">Contoh: $(f \circ g)(2)$</p>
+                        <p class="text-xs text-gray-300">Hitung $g(2)$ dulu, lalu $f(g(2))$</p>
                     </div>
-                    
-                    <!-- Magic Door -->
+                </div>
+                <div class="mt-4 bg-gradient-to-r from-orange-500 to-red-500 bg-opacity-20 rounded-lg p-4">
+                    <h4 class="text-lg font-bold text-orange-400 mb-2">$(f \circ g \circ h)(x)$ - Triple Composition</h4>
+                    <p class="text-sm">$f(g(h(x)))$ - Mulai dari dalam: hitung $h(x)$, lalu $g(h(x))$, terakhir $f(g(h(x)))$</p>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold text-center mb-4 text-yellow-400">🏆 Papan Skor Tertinggi</h3>
+                <div id="leaderboard" class="space-y-2">
+                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
+                        <span>🥇 Master Function</span>
+                        <span class="font-bold">2500 pts</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
+                        <span>🥈 Composition King</span>
+                        <span class="font-bold">2100 pts</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
+                        <span>🥉 Function Hero</span>
+                        <span class="font-bold">1800 pts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="gameArea" class="hidden">
+            <!-- Timer (Speed Mode) -->
+            <div id="timerArea" class="text-center mb-6 hidden">
+                <div class="bg-red-500 bg-opacity-20 rounded-xl p-4 inline-block">
+                    <div class="text-3xl font-bold text-red-400" id="timer">60</div>
+                    <div class="text-sm text-red-300">Detik Tersisa</div>
+                </div>
+            </div>
+
+            <!-- Boss Health (Boss Mode) -->
+            <div id="bossArea" class="hidden mb-6">
+                <div class="bg-black bg-opacity-30 rounded-xl p-6">
+                    <div class="text-center mb-4">
+                        <h3 class="text-2xl font-bold text-red-400" id="bossName">Boss Name</h3>
+                        <p class="text-sm text-red-300" id="bossDescription">Boss Description</p>
+                    </div>
+                    <div class="bg-red-900 rounded-full h-6 overflow-hidden mb-2">
+                        <div class="bg-gradient-to-r from-red-500 to-red-600 h-full transition-all duration-500" id="bossHp" style="width: 100%"></div>
+                    </div>
                     <div class="text-center">
-                        <div id="magic-door" class="inline-block relative">
-                            <div class="text-8xl transform-gpu transition-all duration-1000">🚪</div>
-                            <div class="absolute inset-0 text-8xl opacity-0" id="open-door">✨</div>
-                        </div>
-                        <div class="text-white mt-2">Pintu Ajaib</div>
+                        <span class="text-red-300 text-sm" id="bossHpText">100/100 HP</span>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Control Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-6">
-            <button 
-                id="back-to-material-btn"
-                class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105"
-            >
-                📚 Kembali ke Materi
-            </button>
-            <button 
-                id="restart-btn"
-                class="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105"
-            >
-                🔄 Restart Game
-            </button>
-        </div>
-        
-        <!-- Footer -->
-        <div class="text-center mt-8 mb-4">
-            <div class="bg-black/20 backdrop-blur-sm rounded-2xl p-4">
-                <div class="text-white/80 text-sm md:text-base font-medium">
-                    © 2025 <span class="text-yellow-400 font-bold">mathnology</span>
-                </div>
-                <div class="text-white/60 text-xs mt-1">
-                    🧮 Belajar Matematika dengan Teknologi
+
+            <!-- Adventure Story (Adventure Mode) -->
+            <div id="storyArea" class="hidden mb-6">
+                <div class="bg-gradient-to-r from-green-500 to-blue-500 bg-opacity-20 rounded-xl p-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-4xl" id="storyIcon">🏰</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-yellow-400" id="storyTitle">Lokasi</h3>
+                            <p class="text-sm text-blue-200" id="storyText">Cerita petualangan...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Question Area -->
+            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm mb-6">
+                <div class="text-center mb-6">
+                    <div class="text-lg text-blue-300 mb-2" id="questionType">Tentukan Fungsi Komposisi</div>
+                    <div class="text-3xl font-bold text-yellow-400" id="questionNumber">Soal 1/3</div>
+                </div>
+
+                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
+                    <div id="functionDisplay" class="text-center space-y-4">
+                        <div class="text-xl">
+                            <span class="text-blue-300">f(x) = </span>
+                            <span id="funcF" class="text-white font-mono">2x + 1</span>
+                        </div>
+                        <div class="text-xl">
+                            <span class="text-green-300">g(x) = </span>
+                            <span id="funcG" class="text-white font-mono">x - 3</span>
+                        </div>
+                        <div class="text-2xl text-yellow-400 mt-4">
+                            Tentukan: <span id="questionTarget">(f ∘ g)(x)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Options -->
+                <div id="answerOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Options will be generated dynamically -->
+                </div>
+            </div>
+
+            <!-- Power-ups (Adventure & Boss Mode) -->
+            <div id="powerupsArea" class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm mb-6 hidden">
+                <h3 class="text-lg font-bold text-yellow-400 mb-4">🔮 Power-ups</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <button id="hint-btn" onclick="useHint()" class="bg-blue-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
+                        <div class="text-2xl">💡</div>
+                        <div class="text-xs">Hint</div>
+                        <div class="text-xs" id="hintCount">3</div>
+                    </button>
+                    <button id="skip-btn" onclick="skipQuestion()" class="bg-yellow-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
+                        <div class="text-2xl">⏭️</div>
+                        <div class="text-xs">Skip</div>
+                        <div class="text-xs" id="skipCount">2</div>
+                    </button>
+                    <button id="double-btn" onclick="activateDouble()" class="bg-purple-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
+                        <div class="text-2xl">✨</div>
+                        <div class="text-xs">2x Skor</div>
+                        <div class="text-xs" id="doubleCount">1</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Back to Menu -->
+            <div class="text-center">
+                <button onclick="backToMenu()" class="bg-gray-500 bg-opacity-30 hover:bg-opacity-50 text-white font-bold py-3 px-6 rounded-xl transition-all">
+                    🏠 Kembali ke Menu
+                </button>
+            </div>
         </div>
-    </div>
-    
-    <!-- Success Modal -->
-    <div id="success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
-            <div class="text-6xl mb-4">🎉</div>
-            <h2 class="text-2xl font-bold text-white mb-4">Jawaban Benar!</h2>
-            <p class="text-white mb-6">Pintu ajaib terbuka! Lanjut ke level berikutnya.</p>
-            <button id="next-level-btn" class="px-6 py-3 bg-white text-green-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
-                Level Selanjutnya ➡️
-            </button>
+
+        <!-- Level Complete Screen -->
+        <div id="levelCompleteScreen" class="hidden">
+            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm text-center">
+                <div class="text-6xl mb-4">🎊</div>
+                <h2 class="text-4xl font-bold mb-4 text-yellow-400">Level Selesai!</h2>
+                <div class="text-2xl mb-6">
+                    <div class="text-green-400">Level <span id="completedLevel" class="font-bold">1</span> - <span id="completedMode" class="font-bold">Mode</span></div>
+                    <div class="text-blue-400 mt-2">Skor Level: <span id="levelScore" class="font-bold">0</span></div>
+                </div>
+                
+                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-4">📊 Hasil Level</h3>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div>
+                            <div class="text-2xl font-bold text-green-400" id="levelCorrect">0</div>
+                            <div>Benar</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-red-400" id="levelWrong">0</div>
+                            <div>Salah</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-blue-400" id="levelAccuracy">0%</div>
+                            <div>Akurasi</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 bg-opacity-20 rounded-xl p-4 mb-6">
+                    <p class="text-lg">🎯 Kembali ke menu untuk memilih level atau mode lain!</p>
+                    <p class="text-sm text-gray-300 mt-2">Otomatis kembali dalam <span id="countdown">3</span> detik...</p>
+                </div>
+
+                <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                    🏠 Kembali ke Menu Sekarang
+                </button>
+            </div>
         </div>
-    </div>
-    
-    <!-- Game Over Modal -->
-    <div id="gameover-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-gradient-to-br from-red-500 to-purple-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
-            <div class="text-6xl mb-4">💀</div>
-            <h2 class="text-2xl font-bold text-white mb-4">Game Over!</h2>
-            <p class="text-white mb-6">Nyawa habis! Jangan menyerah, coba lagi!</p>
-            <button id="restart-gameover-btn" class="px-6 py-3 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
-                Main Lagi 🔄
-            </button>
-        </div>
-    </div>
-    
-    <!-- Victory Modal -->
-    <div id="victory-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-8 text-center max-w-md w-full transform scale-95 transition-all duration-300">
-            <div class="text-6xl mb-4">👑</div>
-            <h2 class="text-2xl font-bold text-white mb-4">Selamat!</h2>
-            <p class="text-white mb-4">Anda telah menyelesaikan semua level!</p>
-            <p class="text-white mb-6">Skor Akhir: <span id="final-score" class="font-bold">0</span></p>
-            <button id="restart-victory-btn" class="px-6 py-3 bg-white text-orange-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
-                Main Lagi 🎮
-            </button>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="hidden">
+            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm text-center">
+                <div class="text-6xl mb-4" id="gameOverEmoji">🎉</div>
+                <h2 class="text-4xl font-bold mb-4" id="gameOverTitle">Permainan Selesai!</h2>
+                <div class="text-2xl mb-6">
+                    <div class="text-yellow-400">Skor Akhir: <span id="finalScore" class="font-bold">0</span></div>
+                    <div class="text-blue-400 mt-2">Level Tertinggi: <span id="finalLevel" class="font-bold">1</span></div>
+                </div>
+                
+                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
+                    <h3 class="text-xl font-bold text-yellow-400 mb-4">📊 Statistik Permainan</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>Soal Dijawab: <span id="totalAnswered" class="font-bold">0</span></div>
+                        <div>Jawaban Benar: <span id="totalCorrect" class="font-bold">0</span></div>
+                        <div>Akurasi: <span id="accuracy" class="font-bold">0%</span></div>
+                        <div>Streak Terpanjang: <span id="maxStreak" class="font-bold">0</span></div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                        🔄 Main Lagi
+                    </button>
+                    <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                        🏠 Menu Utama
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        class CompositionGame {
-            constructor() {
-                this.currentLevel = 1;
-                this.lives = 3;
-                this.score = 0;
-                this.maxLevel = 4;
-                
-                this.levels = [
-                    {
-                        question: "Diketahui f(x) = 2x + 1 dan g(x) = x²<br>Hitunglah (f ∘ g)(2)",
-                        answer: 9,
-                        hint: "Hitung g(2) terlebih dahulu, lalu masukkan ke f(x)",
-                        dialog: "Level 1: Mari mulai dengan komposisi sederhana!"
-                    },
-                    {
-                        question: "Diketahui f(x) = x + 3 dan (f ∘ g)(4) = 8<br>Berapakah g(4)?",
-                        answer: 5,
-                        hint: "Jika f(g(4)) = 8 dan f(x) = x + 3, maka g(4) + 3 = 8",
-                        dialog: "Level 2: Sekarang kita cari fungsi yang hilang!"
-                    },
-                    {
-                        question: "Diketahui (f ∘ g)(x) = 2x² + 1 dan g(x) = x²<br>Berapakah f(3)?",
-                        answer: 7,
-                        hint: "Jika g(x) = x², maka f(x²) = 2x² + 1, berarti f(x) = 2x + 1",
-                        dialog: "Level 3: Tantangan yang lebih rumit menanti!"
-                    },
-                    {
-                        question: "Diketahui f(x) = x + 1, g(x) = 2x, h(x) = x²<br>Hitunglah (f ∘ g ∘ h)(2)",
-                        answer: 9,
-                        hint: "Hitung dari dalam: h(2), lalu g(h(2)), lalu f(g(h(2)))",
-                        dialog: "Level 4: Komposisi tiga fungsi! Ini yang terakhir!"
-                    }
-                ];
-                
-                this.initializeElements();
-                this.setupEventListeners();
-                this.createSparkles();
-            }
-            
-            initializeElements() {
-                this.livesEl = document.getElementById('lives');
-                this.scoreEl = document.getElementById('score');
-                this.currentLevelEl = document.getElementById('current-level');
-                this.progressBar = document.getElementById('progress-bar');
-                this.questionEl = document.getElementById('question');
-                this.answerInput = document.getElementById('answer-input');
-                this.submitBtn = document.getElementById('submit-btn');
-                this.hintText = document.getElementById('hint-text');
-                this.wizardDialog = document.getElementById('wizard-dialog');
-                this.magicDoor = document.getElementById('magic-door');
-                this.compositionMachine = document.getElementById('composition-machine');
-                
-                // Modals
-                this.successModal = document.getElementById('success-modal');
-                this.gameoverModal = document.getElementById('gameover-modal');
-                this.victoryModal = document.getElementById('victory-modal');
-                this.finalScoreEl = document.getElementById('final-score');
-            }
-            
-            setupEventListeners() {
-                this.submitBtn.addEventListener('click', () => this.checkAnswer());
-                this.answerInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.checkAnswer();
-                });
-                
-                document.getElementById('next-level-btn').addEventListener('click', () => this.nextLevel());
-                document.getElementById('restart-btn').addEventListener('click', () => this.restartGame());
-                document.getElementById('restart-gameover-btn').addEventListener('click', () => this.restartGame());
-                document.getElementById('restart-victory-btn').addEventListener('click', () => this.restartGame());
-                document.getElementById('start-practice-btn').addEventListener('click', () => this.startPractice());
-                document.getElementById('start-practice-btn-2').addEventListener('click', () => this.startPractice());
-                document.getElementById('start-practice-btn-3').addEventListener('click', () => this.startPractice());
-                document.getElementById('start-practice-btn-4').addEventListener('click', () => this.startPractice());
-                document.getElementById('back-to-material-btn').addEventListener('click', () => this.backToMaterial());
-                document.getElementById('next-material-btn').addEventListener('click', () => this.showMaterialPage(2));
-                document.getElementById('next-material-btn-2').addEventListener('click', () => this.showMaterialPage(3));
-                document.getElementById('next-material-btn-3').addEventListener('click', () => this.showMaterialPage(4));
-                document.getElementById('prev-material-btn').addEventListener('click', () => this.showMaterialPage(1));
-                document.getElementById('prev-material-btn-2').addEventListener('click', () => this.showMaterialPage(2));
-                document.getElementById('prev-material-btn-3').addEventListener('click', () => this.showMaterialPage(3));
-            }
-            
-            startPractice() {
-                document.getElementById('material-section').style.display = 'none';
-                document.getElementById('game-area').style.display = 'grid';
-                this.loadLevel();
-            }
-            
-            backToMaterial() {
-                document.getElementById('game-area').style.display = 'none';
-                document.getElementById('material-section').style.display = 'block';
-                
-                // Reset game state
-                this.currentLevel = 1;
-                this.lives = 3;
-                this.score = 0;
-                
-                this.livesEl.textContent = this.lives;
-                this.scoreEl.textContent = this.score;
-                this.currentLevelEl.textContent = this.currentLevel;
-                this.progressBar.style.width = '25%';
-                this.closeMagicDoor();
-            }
-            
-            showMaterialPage(pageNumber) {
-                document.getElementById('material-page-1').style.display = pageNumber === 1 ? 'block' : 'none';
-                document.getElementById('material-page-2').style.display = pageNumber === 2 ? 'block' : 'none';
-                document.getElementById('material-page-3').style.display = pageNumber === 3 ? 'block' : 'none';
-                document.getElementById('material-page-4').style.display = pageNumber === 4 ? 'block' : 'none';
-            }
-            
-            loadLevel() {
-                const level = this.levels[this.currentLevel - 1];
-                this.questionEl.innerHTML = level.question;
-                this.hintText.textContent = level.hint;
-                this.wizardDialog.textContent = level.dialog;
-                this.answerInput.value = '';
-                this.answerInput.focus();
-                
-                // Update UI
-                this.currentLevelEl.textContent = this.currentLevel;
-                this.progressBar.style.width = `${(this.currentLevel / this.maxLevel) * 100}%`;
-            }
-            
-            checkAnswer() {
-                const userAnswer = parseInt(this.answerInput.value);
-                const correctAnswer = this.levels[this.currentLevel - 1].answer;
-                
-                if (userAnswer === correctAnswer) {
-                    this.handleCorrectAnswer();
-                } else {
-                    this.handleWrongAnswer();
+        let gameState = {
+            mode: '',
+            score: 0,
+            level: 1,
+            lives: 3,
+            streak: 0,
+            maxStreak: 0,
+            totalAnswered: 0,
+            totalCorrect: 0,
+            currentQuestion: {},
+            timer: 60,
+            timerInterval: null,
+            powerups: {
+                hints: 3,
+                skips: 2,
+                double: 1
+            },
+            doubleActive: false,
+            boss: {
+                name: '',
+                maxHp: 100,
+                currentHp: 100
+            },
+            questionsInLevel: 0, // Track questions answered in current level
+            maxQuestionsPerLevel: 3, // Exactly 3 questions per level
+            levelStartScore: 0, // Score at start of level
+            levelCorrectAnswers: 0, // Correct answers in current level
+            levelWrongAnswers: 0, // Wrong answers in current level
+            countdownInterval: null // For auto-return countdown
+        };
+
+        // Question banks - 3 questions per level for each mode
+        const speedQuestions = {
+            1: [
+                {
+                    f: "x + 1", g: "x + 2", answer: "x + 3", type: "fog",
+                    options: ["x + 1", "x + 3", "x + 2", "2x + 1"],
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "x + 3", g: "x + 1", answer: "x + 4", type: "gof",
+                    options: ["x + 3", "x + 1", "x + 4", "2x + 4"],
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "2x", g: "x + 1", answer: "3", type: "numerical",
+                    options: ["1", "2", "3", "4"],
+                    question: "(f ∘ g)(1)", value: 1
                 }
-            }
-            
-            handleCorrectAnswer() {
-                this.score += 100;
-                this.scoreEl.textContent = this.score;
-                
-                // Visual effects
-                this.createParticles('gold');
-                this.showFloatingScore('+100');
-                this.openMagicDoor();
-                this.compositionMachine.classList.add('rainbow-glow');
-                
-                setTimeout(() => {
-                    this.compositionMachine.classList.remove('rainbow-glow');
-                    this.showSuccessModal();
-                }, 1500);
-            }
-            
-            handleWrongAnswer() {
-                this.lives--;
-                this.livesEl.textContent = this.lives;
-                
-                // Visual effects
-                this.createParticles('red');
-                this.answerInput.classList.add('shake');
-                this.magicDoor.classList.add('shake');
-                
-                setTimeout(() => {
-                    this.answerInput.classList.remove('shake');
-                    this.magicDoor.classList.remove('shake');
-                }, 500);
-                
-                if (this.lives <= 0) {
-                    setTimeout(() => this.showGameOverModal(), 1000);
-                } else {
-                    this.wizardDialog.textContent = `Jawaban salah! Coba lagi. Sisa nyawa: ${this.lives}`;
+            ],
+            2: [
+                {
+                    f: "2x", g: "x + 1", answer: "2x + 2", type: "fog",
+                    options: ["2x + 1", "3x + 1", "2x + 2", "x + 2"],
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "x + 2", g: "2x", answer: "4x + 2", type: "gof",
+                    options: ["3x + 2", "2x", "x + 4", "4x + 2"],
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x - 1", g: "2x + 3", answer: "7", type: "numerical",
+                    options: ["5", "6", "7", "8"],
+                    question: "(f ∘ g)(2)", value: 2
                 }
-            }
-            
-            nextLevel() {
-                this.hideModal(this.successModal);
-                this.closeMagicDoor();
-                
-                if (this.currentLevel >= this.maxLevel) {
-                    setTimeout(() => this.showVictoryModal(), 500);
-                } else {
-                    this.currentLevel++;
-                    setTimeout(() => this.loadLevel(), 500);
+            ],
+            3: [
+                {
+                    f: "x - 1", g: "x + 2", answer: "x + 1", type: "fog",
+                    options: ["x - 1", "x + 2", "x + 1", "2x + 1"],
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "2x + 1", g: "x", answer: "2x + 1", type: "gof",
+                    options: ["2x", "2x + 1", "x + 1", "3x + 1"],
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "3x - 2", g: "x + 1", answer: "4", type: "numerical",
+                    options: ["2", "3", "4", "5"],
+                    question: "(f ∘ g)(2)", value: 2
                 }
-            }
-            
-            openMagicDoor() {
-                const door = this.magicDoor.querySelector('.text-8xl');
-                const openDoor = document.getElementById('open-door');
-                
-                door.classList.add('door-open');
-                setTimeout(() => {
-                    door.style.opacity = '0';
-                    openDoor.style.opacity = '1';
-                }, 500);
-            }
-            
-            closeMagicDoor() {
-                const door = this.magicDoor.querySelector('.text-8xl');
-                const openDoor = document.getElementById('open-door');
-                
-                door.classList.remove('door-open');
-                door.style.opacity = '1';
-                openDoor.style.opacity = '0';
-            }
-            
-            createParticles(color) {
-                const colors = {
-                    gold: '#ffd700',
-                    red: '#ff4444'
-                };
-                
-                for (let i = 0; i < 15; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.backgroundColor = colors[color];
-                    particle.style.left = Math.random() * window.innerWidth + 'px';
-                    particle.style.top = Math.random() * window.innerHeight + 'px';
-                    particle.style.animationDelay = Math.random() * 0.5 + 's';
-                    
-                    document.body.appendChild(particle);
-                    
-                    setTimeout(() => particle.remove(), 1000);
+            ]
+        };
+
+        const adventureQuestions = {
+            1: [
+                {
+                    f: "x^2", g: "x + 1", answer: "x^2 + 2x + 1", type: "fog",
+                    options: ["x^2 + 1", "x^2 + 2x + 1", "x^2 + x + 1", "2x^2 + 1"],
+                    story: "🏰 Kastil Ajaib: Kekuatan sihir meningkat!",
+                    icon: "🏰", question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "2x + 3", g: "x - 1", answer: "x + 2", type: "gof",
+                    options: ["2x + 3", "2x - 1", "x + 2", "3x + 2"],
+                    story: "🏰 Kastil Ajaib: Mantra perlindungan aktif!",
+                    icon: "🏰", question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x + 2", g: "3x", h: "x - 1", answer: "3x + 5", type: "triple",
+                    options: ["4x + 2", "3x + 6", "x + 6", "3x + 5"],
+                    story: "🏰 Kastil Ajaib: Gerbang terbuka!",
+                    icon: "🏰", question: "(f ∘ g ∘ h)(x)"
                 }
+            ],
+            2: [
+                {
+                    f: "x^2 - 1", g: "x + 2", answer: "x^2 + 4x + 3", type: "fog",
+                    options: ["x^2 + 2x - 1", "x^2 + 4x + 3", "x^2 + 4x - 1", "x^2 + 2x + 3"],
+                    story: "🗡️ Gua Kristal: Pedang ajaib membutuhkan formula!",
+                    icon: "💎", question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "3x - 2", g: "2x + 1", answer: "6x - 1", type: "gof",
+                    options: ["6x - 1", "5x + 1", "6x + 1", "6x - 2"],
+                    story: "🗡️ Gua Kristal: Kristal berkilau terang!",
+                    icon: "💎", question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x^2", g: "2x", h: "x + 1", answer: "4x^2 + 16x + 16", type: "triple",
+                    options: ["2x^2 - 1", "4x^2 + 16x + 16", "x^2 - 4x + 2", "2x^2 - 4x + 2"],
+                    story: "🗡️ Gua Kristal: Harta karun ditemukan!",
+                    icon: "💎", question: "(f ∘ g ∘ h)(x)"
+                }
+            ],
+            3: [
+                {
+                    f: "x^2 + x", g: "x - 2", answer: "x^2 - 3x + 2", type: "fog",
+                    options: ["x^2 + x - 2", "x^2 - x - 2", "x^2 - 3x + 2", "x^2 - 2x + 1"],
+                    story: "🏹 Menara Sihir: Panah elemental siap diluncurkan!",
+                    icon: "🗼", question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "4x + 1", g: "x^2", answer: "x^2 + 4", type: "gof",
+                    options: ["4x^2", "x^2 + 4", "x^2 + 1", "4x + x^2"],
+                    story: "🏹 Menara Sihir: Kekuatan maksimal tercapai!",
+                    icon: "🗼", question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x - 3", g: "2x + 1", answer: "-5", type: "numerical",
+                    options: ["2x + 1", "-3", "-5", "2x - 2"],
+                    story: "🏹 Menara Sihir: Misi berhasil diselesaikan!",
+                    icon: "🗼", question: "(f ∘ g)(-2)", value: -2
+                }
+            ]
+        };
+
+        const bossQuestions = {
+            1: [
+                {
+                    f: "x^3 + 2x^2 - x + 1", g: "x - 1", answer: "x^3 - x^2 - 2x + 2", type: "fog",
+                    options: ["x^3 + 2x^2 - x", "x^3 - x^2 + 2x + 1", "x^3 - x^2 - 2x + 2", "x^3 + x^2 - 3x + 2"],
+                    boss: "Goblin King", hp: 100,
+                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "2x^2 + 3x - 4", g: "x^2 + 1", answer: "x^4 + 2x^2 + 4", type: "gof",
+                    options: ["2x^4 + 3x^2 - 4", "x^4 + 2x^2 + 4", "2x^4 + 2x^2 + 3x - 4", "2x^4 + 5x^2 - 1"],
+                    boss: "Goblin King", hp: 100,
+                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x^2", g: "2x - 1", h: "x + 3", answer: "4x^2 + 20x + 25", type: "triple",
+                    options: ["4x^2 - 6x + 1", "4x^2 + 20x + 25", "2x^2 - 7x + 3", "4x^2 - 8x + 3"],
+                    boss: "Goblin King", hp: 100,
+                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
+                    question: "(f ∘ g ∘ h)(x)"
+                }
+            ],
+            2: [
+                {
+                    f: "x^3 - 2x^2 + x - 3", g: "x + 2", answer: "x^3 + 4x^2 + 3x + 1", type: "fog",
+                    options: ["x^3 + 2x^2 - x - 1", "x^3 - 2x^2 + x + 5", "x^3 + 6x^2 + 11x + 5", "x^3 + 4x^2 + 3x + 1"],
+                    boss: "Dragon Lord", hp: 150,
+                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "3x^2 - 4x + 1", g: "x^2 - 2x + 1", answer: "x^4 - 4x^3 + 7x^2 - 6x + 2", type: "gof",
+                    options: ["3x^4 - 12x^3 + 13x^2 - 6x + 1", "x^4 - 4x^3 + 7x^2 - 6x + 2", "3x^4 - 16x^3 + 25x^2 - 10x + 2", "3x^4 - 4x^3 + x^2 - 2x + 1"],
+                    boss: "Dragon Lord", hp: 150,
+                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "2x^3 + x - 5", g: "x - 3", answer: "-52", type: "numerical",
+                    options: ["-50", "-52", "-48", "-54"],
+                    boss: "Dragon Lord", hp: 150,
+                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
+                    question: "(f ∘ g)(0)", value: 0
+                }
+            ],
+            3: [
+                {
+                    f: "x^4 - 2x^3 + x^2 - 1", g: "x + 1", answer: "x^4 + 2x^3 - x^2 + 2x", type: "fog",
+                    options: ["x^4 - 2x^3 + x^2", "x^4 + 4x^3 + 6x^2 + 4x", "x^4 - x^2 - 1", "x^4 + 2x^3 - x^2 + 2x"],
+                    boss: "Demon Emperor", hp: 200,
+                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
+                    question: "(f ∘ g)(x)"
+                },
+                {
+                    f: "3x^3 - 5x^2 + 2x - 7", g: "2x - 1", answer: "x^3 - 2x^2 + x - 2", type: "gof",
+                    options: ["24x^3 - 36x^2 + 14x - 8", "x^3 - 2x^2 + x - 2", "24x^3 - 54x^2 + 37x - 10", "24x^3 - 60x^2 + 44x - 12"],
+                    boss: "Demon Emperor", hp: 200,
+                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
+                    question: "(g ∘ f)(x)"
+                },
+                {
+                    f: "x^2 + 3x - 2", g: "x^3 - x + 1", h: "x - 1", answer: "x^9 - 3x^7 + 6x^6 - 3x^5 + 3x^4 - 6x^3 + 6x^2 - 3x + 1", type: "triple",
+                    options: ["x^6 - x^4 + 4x^3 - x + 1", "x^6 + 6x^4 - 2x^3 + 3x^2 - 5x + 1", "x^5 + 3x^4 - 2x^3 - x + 1", "x^9 - 3x^7 + 6x^6 - 3x^5 + 3x^4 - 6x^3 + 6x^2 - 3x + 1"],
+                    boss: "Demon Emperor", hp: 200,
+                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
+                    question: "(f ∘ g ∘ h)(x)"
+                }
+            ]
+        };
+
+        function startGame(mode) {
+            gameState.mode = mode;
+            gameState.score = 0;
+            gameState.level = 1;
+            gameState.lives = 3;
+            gameState.streak = 0;
+            gameState.totalAnswered = 0;
+            gameState.totalCorrect = 0;
+            gameState.questionsInLevel = 0;
+            gameState.levelStartScore = 0;
+            gameState.levelCorrectAnswers = 0;
+            gameState.levelWrongAnswers = 0;
+            gameState.powerups = { hints: 3, skips: 2, double: 1 };
+            
+            document.getElementById('gameMenu').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            
+            // Show/hide mode-specific elements
+            if (mode === 'speed') {
+                document.getElementById('timerArea').classList.remove('hidden');
+                document.getElementById('powerupsArea').classList.add('hidden');
+                document.getElementById('bossArea').classList.add('hidden');
+                document.getElementById('storyArea').classList.add('hidden');
+                startTimer();
+            } else if (mode === 'adventure') {
+                document.getElementById('timerArea').classList.add('hidden');
+                document.getElementById('powerupsArea').classList.remove('hidden');
+                document.getElementById('bossArea').classList.add('hidden');
+                document.getElementById('storyArea').classList.remove('hidden');
+            } else if (mode === 'boss') {
+                document.getElementById('timerArea').classList.add('hidden');
+                document.getElementById('powerupsArea').classList.remove('hidden');
+                document.getElementById('bossArea').classList.remove('hidden');
+                document.getElementById('storyArea').classList.add('hidden');
             }
             
-            showFloatingScore(text) {
-                const floatingScore = document.createElement('div');
-                floatingScore.className = 'floating-score fixed text-2xl font-bold text-yellow-400 z-50';
-                floatingScore.textContent = text;
-                floatingScore.style.left = '50%';
-                floatingScore.style.top = '30%';
-                floatingScore.style.transform = 'translateX(-50%)';
-                
-                document.body.appendChild(floatingScore);
-                
-                setTimeout(() => floatingScore.remove(), 1000);
+            generateQuestion();
+            updateUI();
+        }
+
+        function generateQuestion() {
+            let questions;
+            
+            // Get questions for current level
+            switch(gameState.mode) {
+                case 'speed':
+                    questions = speedQuestions[gameState.level] || speedQuestions[3];
+                    break;
+                case 'adventure':
+                    questions = adventureQuestions[gameState.level] || adventureQuestions[3];
+                    break;
+                case 'boss':
+                    questions = bossQuestions[gameState.level] || bossQuestions[3];
+                    break;
             }
             
-            createSparkles() {
-                const container = document.getElementById('sparkles-container');
-                
-                setInterval(() => {
-                    const sparkle = document.createElement('div');
-                    sparkle.className = 'sparkle';
-                    sparkle.style.left = Math.random() * window.innerWidth + 'px';
-                    sparkle.style.top = Math.random() * window.innerHeight + 'px';
-                    sparkle.style.animationDelay = Math.random() * 2 + 's';
-                    
-                    container.appendChild(sparkle);
-                    
-                    setTimeout(() => sparkle.remove(), 2000);
-                }, 300);
+            // Get the specific question for this position in the level
+            const questionIndex = gameState.questionsInLevel % gameState.maxQuestionsPerLevel;
+            const question = questions[questionIndex];
+            gameState.currentQuestion = question;
+            
+            // Update display based on mode
+            if (gameState.mode === 'adventure') {
+                document.getElementById('storyIcon').textContent = question.icon;
+                document.getElementById('storyTitle').textContent = `Level ${gameState.level} - Petualangan`;
+                document.getElementById('storyText').textContent = question.story;
+            } else if (gameState.mode === 'boss') {
+                if (gameState.questionsInLevel === 0) {
+                    // New boss
+                    gameState.boss.name = question.boss;
+                    gameState.boss.maxHp = question.hp;
+                    gameState.boss.currentHp = question.hp;
+                }
+                document.getElementById('bossName').textContent = question.boss;
+                document.getElementById('bossDescription').textContent = question.description;
+                updateBossHealth();
             }
             
-            showSuccessModal() {
-                this.successModal.classList.remove('hidden');
-                this.successModal.classList.add('flex');
-                this.successModal.querySelector('div').style.transform = 'scale(1)';
+            // Update function display based on question type
+            let functionDisplayHTML = '';
+            if (question.type === 'triple') {
+                functionDisplayHTML = `
+                    <div class="text-xl">
+                        <span class="text-blue-300">f(x) = </span>
+                        <span class="text-white font-mono">${question.f}</span>
+                    </div>
+                    <div class="text-xl">
+                        <span class="text-green-300">g(x) = </span>
+                        <span class="text-white font-mono">${question.g}</span>
+                    </div>
+                    <div class="text-xl">
+                        <span class="text-purple-300">h(x) = </span>
+                        <span class="text-white font-mono">${question.h}</span>
+                    </div>
+                    <div class="text-2xl text-yellow-400 mt-4">
+                        Tentukan: <span>${question.question}</span>
+                    </div>
+                `;
+            } else if (question.type === 'numerical') {
+                functionDisplayHTML = `
+                    <div class="text-xl">
+                        <span class="text-blue-300">f(x) = </span>
+                        <span class="text-white font-mono">${question.f}</span>
+                    </div>
+                    <div class="text-xl">
+                        <span class="text-green-300">g(x) = </span>
+                        <span class="text-white font-mono">${question.g}</span>
+                    </div>
+                    <div class="text-2xl text-yellow-400 mt-4">
+                        Tentukan: <span>${question.question}</span>
+                    </div>
+                `;
+            } else {
+                functionDisplayHTML = `
+                    <div class="text-xl">
+                        <span class="text-blue-300">f(x) = </span>
+                        <span class="text-white font-mono">${question.f}</span>
+                    </div>
+                    <div class="text-xl">
+                        <span class="text-green-300">g(x) = </span>
+                        <span class="text-white font-mono">${question.g}</span>
+                    </div>
+                    <div class="text-2xl text-yellow-400 mt-4">
+                        Tentukan: <span>${question.question}</span>
+                    </div>
+                `;
             }
             
-            showGameOverModal() {
-                this.gameoverModal.classList.remove('hidden');
-                this.gameoverModal.classList.add('flex');
-                this.gameoverModal.querySelector('div').style.transform = 'scale(1)';
-            }
+            document.getElementById('functionDisplay').innerHTML = functionDisplayHTML;
             
-            showVictoryModal() {
-                this.finalScoreEl.textContent = this.score;
-                this.victoryModal.classList.remove('hidden');
-                this.victoryModal.classList.add('flex');
-                this.victoryModal.querySelector('div').style.transform = 'scale(1)';
-            }
+            // Update question number to show progress in level
+            const questionInLevel = (gameState.questionsInLevel % gameState.maxQuestionsPerLevel) + 1;
+            document.getElementById('questionNumber').textContent = `Soal ${questionInLevel}/3`;
             
-            hideModal(modal) {
-                modal.querySelector('div').style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
-                }, 300);
-            }
+            // Generate answer options
+            const optionsHTML = question.options.map((option, index) => {
+                const displayOption = question.type === 'numerical' ? option : `$${option}$`;
+                return `<button onclick="selectAnswer('${option}')" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-xl p-4 text-lg font-mono transition-all transform hover:scale-105">
+                    ${String.fromCharCode(65 + index)}) ${displayOption}
+                </button>`;
+            }).join('');
             
-            restartGame() {
-                this.currentLevel = 1;
-                this.lives = 3;
-                this.score = 0;
-                
-                this.livesEl.textContent = this.lives;
-                this.scoreEl.textContent = this.score;
-                
-                this.hideModal(this.gameoverModal);
-                this.hideModal(this.victoryModal);
-                this.closeMagicDoor();
-                
-                setTimeout(() => this.loadLevel(), 500);
+            document.getElementById('answerOptions').innerHTML = optionsHTML;
+            
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
             }
         }
-        
-        // Initialize game when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new CompositionGame();
-        });
+
+        function selectAnswer(answer) {
+            gameState.totalAnswered++;
+            gameState.questionsInLevel++;
+            
+            if (answer === gameState.currentQuestion.answer) {
+                // Correct answer
+                gameState.totalCorrect++;
+                gameState.levelCorrectAnswers++;
+                gameState.streak++;
+                gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
+                
+                let points = 100 * gameState.level;
+                if (gameState.mode === 'speed') points = 50;
+                if (gameState.mode === 'boss') points = 200;
+                if (gameState.streak >= 3) points *= 1.5;
+                if (gameState.doubleActive) {
+                    points *= 2;
+                    gameState.doubleActive = false;
+                }
+                
+                gameState.score += Math.floor(points);
+                
+                // Mode-specific effects
+                if (gameState.mode === 'boss') {
+                    const damage = Math.floor(gameState.boss.maxHp / 3); // 1/3 damage per correct answer
+                    gameState.boss.currentHp = Math.max(0, gameState.boss.currentHp - damage);
+                    showFeedback(true, `💥 Critical Hit! -${damage} HP! +${Math.floor(points)} poin`);
+                    
+                    if (gameState.boss.currentHp <= 0) {
+                        showBossDefeated();
+                        return;
+                    }
+                } else {
+                    showFeedback(true, `Benar! +${Math.floor(points)} poin`);
+                }
+                
+            } else {
+                // Wrong answer
+                gameState.levelWrongAnswers++;
+                gameState.streak = 0;
+                if (gameState.mode !== 'boss') {
+                    gameState.lives--;
+                }
+                
+                showFeedback(false, `Salah! Jawaban benar: $${gameState.currentQuestion.answer}$`);
+                
+                if (gameState.lives <= 0 && gameState.mode !== 'boss') {
+                    endGame();
+                    return;
+                }
+            }
+            
+            // Check if level is complete (3 questions answered)
+            if (gameState.questionsInLevel % gameState.maxQuestionsPerLevel === 0) {
+                showLevelComplete();
+                return;
+            }
+            
+            updateUI();
+            
+            setTimeout(() => {
+                generateQuestion();
+            }, 2500);
+        }
+
+        function showFeedback(isCorrect, message) {
+            const feedback = document.createElement('div');
+            feedback.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-6 rounded-xl text-center text-white font-bold text-xl ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`;
+            feedback.innerHTML = `
+                <div class="text-4xl mb-2">${isCorrect ? '🎉' : '😞'}</div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.body.removeChild(feedback);
+            }, 2000);
+        }
+
+        function showLevelComplete() {
+            // Calculate level statistics
+            const levelScore = gameState.score - gameState.levelStartScore;
+            const levelAccuracy = gameState.maxQuestionsPerLevel > 0 ? 
+                Math.round((gameState.levelCorrectAnswers / gameState.maxQuestionsPerLevel) * 100) : 0;
+            
+            // Update level complete screen
+            document.getElementById('completedLevel').textContent = gameState.level;
+            document.getElementById('completedMode').textContent = 
+                gameState.mode === 'speed' ? 'Speed Challenge' :
+                gameState.mode === 'adventure' ? 'Adventure Mode' : 'Boss Battle';
+            document.getElementById('levelScore').textContent = levelScore;
+            document.getElementById('levelCorrect').textContent = gameState.levelCorrectAnswers;
+            document.getElementById('levelWrong').textContent = gameState.levelWrongAnswers;
+            document.getElementById('levelAccuracy').textContent = levelAccuracy + '%';
+            
+            // Hide game area and show level complete screen
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('levelCompleteScreen').classList.remove('hidden');
+            
+            // Start countdown to auto-return to menu
+            let countdown = 5;
+            document.getElementById('countdown').textContent = countdown;
+            
+            gameState.countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById('countdown').textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(gameState.countdownInterval);
+                    backToMenu();
+                }
+            }, 1000);
+        }
+
+        function showLevelUp() {
+            const levelUp = document.createElement('div');
+            levelUp.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gradient-to-r from-yellow-400 to-orange-500 p-8 rounded-xl text-center text-white font-bold';
+            levelUp.innerHTML = `
+                <div class="text-6xl mb-4">🎊</div>
+                <div class="text-3xl">LEVEL UP!</div>
+                <div class="text-xl">Level ${gameState.level}</div>
+                <div class="text-sm mt-2">3 soal baru menanti!</div>
+            `;
+            
+            document.body.appendChild(levelUp);
+            
+            setTimeout(() => {
+                document.body.removeChild(levelUp);
+            }, 3000);
+        }
+
+        function showBossDefeated() {
+            const bossDefeated = document.createElement('div');
+            bossDefeated.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gradient-to-r from-yellow-400 to-orange-500 p-8 rounded-xl text-center text-white font-bold';
+            bossDefeated.innerHTML = `
+                <div class="text-6xl mb-4">👑</div>
+                <div class="text-4xl mb-2">BOSS DEFEATED!</div>
+                <div class="text-2xl">${gameState.boss.name} telah dikalahkan!</div>
+                <div class="text-xl mt-2">+1000 Bonus Points!</div>
+            `;
+            
+            document.body.appendChild(bossDefeated);
+            gameState.score += 1000;
+            updateUI();
+            
+            setTimeout(() => {
+                document.body.removeChild(bossDefeated);
+                showLevelComplete();
+            }, 4000);
+        }
+
+        function startTimer() {
+            gameState.timer = 60;
+            gameState.timerInterval = setInterval(() => {
+                gameState.timer--;
+                document.getElementById('timer').textContent = gameState.timer;
+                
+                if (gameState.timer <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function useHint() {
+            if (gameState.powerups.hints > 0) {
+                gameState.powerups.hints--;
+                
+                const options = document.querySelectorAll('#answerOptions button');
+                const correctAnswer = gameState.currentQuestion.answer;
+                let removed = 0;
+                
+                options.forEach(option => {
+                    const optionText = option.textContent.split(') ')[1];
+                    if (optionText !== correctAnswer && removed < 2) {
+                        option.style.opacity = '0.3';
+                        option.disabled = true;
+                        removed++;
+                    }
+                });
+                
+                updateUI();
+                showFeedback(true, 'Hint digunakan! 2 opsi salah dihilangkan');
+            }
+        }
+
+        function skipQuestion() {
+            if (gameState.powerups.skips > 0) {
+                gameState.powerups.skips--;
+                gameState.totalAnswered++;
+                gameState.questionsInLevel++;
+                gameState.levelWrongAnswers++; // Count skip as wrong for level stats
+                
+                // Check if level is complete
+                if (gameState.questionsInLevel % gameState.maxQuestionsPerLevel === 0) {
+                    showLevelComplete();
+                    return;
+                }
+                
+                updateUI();
+                generateQuestion();
+                showFeedback(true, 'Soal dilewati!');
+            }
+        }
+
+        function activateDouble() {
+            if (gameState.powerups.double > 0) {
+                gameState.powerups.double--;
+                gameState.doubleActive = true;
+                updateUI();
+                showFeedback(true, 'Double Score aktif untuk soal berikutnya!');
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('lives').textContent = '❤️'.repeat(gameState.lives);
+            document.getElementById('streak').textContent = gameState.streak;
+            
+            // Update progress indicator
+            const questionInLevel = (gameState.questionsInLevel % gameState.maxQuestionsPerLevel) + 1;
+            document.getElementById('progress').textContent = `${questionInLevel}/3`;
+            
+            if (gameState.mode !== 'speed') {
+                document.getElementById('hintCount').textContent = gameState.powerups.hints;
+                document.getElementById('skipCount').textContent = gameState.powerups.skips;
+                document.getElementById('doubleCount').textContent = gameState.powerups.double;
+            }
+        }
+
+        function updateBossHealth() {
+            if (gameState.mode === 'boss') {
+                const healthPercent = (gameState.boss.currentHp / gameState.boss.maxHp) * 100;
+                document.getElementById('bossHp').style.width = healthPercent + '%';
+                document.getElementById('bossHpText').textContent = `${gameState.boss.currentHp}/${gameState.boss.maxHp} HP`;
+            }
+        }
+
+        function endGame() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.remove('hidden');
+            
+            const accuracy = gameState.totalAnswered > 0 ? Math.round((gameState.totalCorrect / gameState.totalAnswered) * 100) : 0;
+            
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('finalLevel').textContent = gameState.level;
+            document.getElementById('totalAnswered').textContent = gameState.totalAnswered;
+            document.getElementById('totalCorrect').textContent = gameState.totalCorrect;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+            document.getElementById('maxStreak').textContent = gameState.maxStreak;
+            
+            if (accuracy >= 80) {
+                document.getElementById('gameOverEmoji').textContent = '🏆';
+                document.getElementById('gameOverTitle').textContent = 'Luar Biasa!';
+            } else if (accuracy >= 60) {
+                document.getElementById('gameOverEmoji').textContent = '🎉';
+                document.getElementById('gameOverTitle').textContent = 'Bagus!';
+            } else {
+                document.getElementById('gameOverEmoji').textContent = '💪';
+                document.getElementById('gameOverTitle').textContent = 'Terus Berlatih!';
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            startGame(gameState.mode);
+        }
+
+        function backToMenu() {
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            if (gameState.countdownInterval) {
+                clearInterval(gameState.countdownInterval);
+            }
+            
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('gameOverScreen').classList.add('hidden');
+            document.getElementById('levelCompleteScreen').classList.add('hidden');
+            document.getElementById('gameMenu').classList.remove('hidden');
+        }
+
+        // Initialize game
+        updateUI();
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972ed080a5f1494b',t:'MTc1NTgyODQyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97b710fb82f36045',t:'MTc1NzI1NzEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
