@@ -64,6 +64,20 @@
 </head>
 <body class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 min-h-screen">
     <div class="container mx-auto px-4 py-8">
+        <!-- Developer Section -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-6 text-center">
+            <div class="flex flex-col items-center space-y-3">
+                <img src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/guru%20gita.png" 
+                     alt="Gita Chandra Febriliana - Pengembang Aplikasi" 
+                     class="w-16 h-16 rounded-full border-3 border-white/30 shadow-lg"
+                     onerror="this.src=''; this.alt='Foto tidak dapat dimuat'; this.style.display='none';">
+                <div class="text-white">
+                    <p class="text-lg font-bold text-yellow-300">Gita Chandra Febriliana</p>
+                    <p class="text-sm text-purple-100">Pengembang Aplikasi Pembelajaran</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-white mb-2">📚 Komposisi Fungsi</h1>
@@ -88,33 +102,112 @@
             
             <div class="space-y-6">
                 <div class="bg-blue-50 rounded-lg p-6">
-                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Definisi Komposisi Fungsi</h3>
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">🎯 Definisi Komposisi Fungsi</h3>
                     <p class="text-gray-700 mb-3">
-                        Komposisi fungsi adalah operasi yang menggabungkan dua fungsi atau lebih menjadi satu fungsi baru.
+                        Komposisi fungsi adalah operasi yang menggabungkan dua fungsi atau lebih menjadi satu fungsi baru. 
+                        Hasil dari fungsi pertama menjadi input untuk fungsi kedua.
                     </p>
-                    <div class="bg-white rounded-lg p-4 math text-lg">
-                        <strong>Notasi:</strong> (f ∘ g)(x) = f(g(x))
+                    <div class="bg-white rounded-lg p-4 math text-lg space-y-2">
+                        <p><strong>Notasi:</strong> (f ∘ g)(x) = f(g(x))</p>
+                        <p class="text-sm text-gray-600">Dibaca: "f komposisi g dari x" atau "f bulat g dari x"</p>
+                    </div>
+                    <div class="mt-4 p-4 bg-blue-100 rounded-lg">
+                        <p class="text-sm text-blue-800">
+                            <strong>Penting:</strong> Urutan fungsi sangat berpengaruh! 
+                            (f ∘ g)(x) ≠ (g ∘ f)(x) dalam kebanyakan kasus.
+                        </p>
                     </div>
                 </div>
 
                 <div class="bg-green-50 rounded-lg p-6">
-                    <h3 class="text-xl font-semibold text-green-800 mb-3">Langkah-langkah Menyelesaikan</h3>
-                    <ol class="list-decimal list-inside space-y-2 text-gray-700">
-                        <li>Hitung nilai fungsi dalam kurung terlebih dahulu: g(x)</li>
-                        <li>Substitusikan hasil g(x) ke dalam fungsi luar: f(hasil g(x))</li>
-                        <li>Hitung nilai akhirnya</li>
+                    <h3 class="text-xl font-semibold text-green-800 mb-3">📋 Langkah-langkah Menyelesaikan</h3>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li><strong>Identifikasi fungsi:</strong> Tentukan mana fungsi dalam (g) dan fungsi luar (f)</li>
+                        <li><strong>Hitung fungsi dalam:</strong> Substitusikan nilai x ke dalam g(x)</li>
+                        <li><strong>Substitusi ke fungsi luar:</strong> Masukkan hasil g(x) ke dalam f</li>
+                        <li><strong>Sederhanakan:</strong> Hitung nilai akhir atau bentuk aljabar</li>
                     </ol>
+                    <div class="mt-4 p-4 bg-green-100 rounded-lg">
+                        <p class="text-sm text-green-800">
+                            <strong>Tips:</strong> Selalu kerjakan dari dalam ke luar, seperti mengupas bawang!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">🔄 Jenis-jenis Komposisi Fungsi</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-700 mb-2">1. Komposisi Dua Fungsi</h4>
+                            <p class="text-gray-700 math">(f ∘ g)(x) = f(g(x))</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-700 mb-2">2. Komposisi Tiga Fungsi</h4>
+                            <p class="text-gray-700 math">(f ∘ g ∘ h)(x) = f(g(h(x)))</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-semibold text-purple-700 mb-2">3. Komposisi Fungsi dengan Dirinya Sendiri</h4>
+                            <p class="text-gray-700 math">(f ∘ f)(x) = f(f(x))</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bg-yellow-50 rounded-lg p-6">
-                    <h3 class="text-xl font-semibold text-yellow-800 mb-3">Contoh Sederhana</h3>
+                    <h3 class="text-xl font-semibold text-yellow-800 mb-3">💡 Contoh Lengkap</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-lg p-4">
+                            <p><strong>Diketahui:</strong> f(x) = 2x + 1 dan g(x) = x - 3</p>
+                            <p><strong>Tentukan:</strong> (f ∘ g)(5)</p>
+                            <div class="mt-3 space-y-2 text-sm">
+                                <p><strong>Langkah 1:</strong> Hitung g(5) = 5 - 3 = 2</p>
+                                <p><strong>Langkah 2:</strong> Hitung f(2) = 2(2) + 1 = 4 + 1 = 5</p>
+                                <p><strong>Jadi:</strong> (f ∘ g)(5) = 5</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg p-4">
+                            <p><strong>Contoh Bentuk Umum:</strong></p>
+                            <p><strong>Tentukan:</strong> (f ∘ g)(x)</p>
+                            <div class="mt-3 space-y-2 text-sm">
+                                <p><strong>Langkah 1:</strong> g(x) = x - 3</p>
+                                <p><strong>Langkah 2:</strong> f(g(x)) = f(x - 3) = 2(x - 3) + 1</p>
+                                <p><strong>Langkah 3:</strong> = 2x - 6 + 1 = 2x - 5</p>
+                                <p><strong>Jadi:</strong> (f ∘ g)(x) = 2x - 5</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-red-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-red-800 mb-3">⚠️ Kesalahan Umum</h3>
                     <div class="space-y-3">
-                        <p><strong>Diketahui:</strong> f(x) = 2x + 1 dan g(x) = x - 3</p>
-                        <p><strong>Tentukan:</strong> (f ∘ g)(5)</p>
-                        <div class="bg-white rounded-lg p-4 space-y-2">
-                            <p><strong>Langkah 1:</strong> g(5) = 5 - 3 = 2</p>
-                            <p><strong>Langkah 2:</strong> f(2) = 2(2) + 1 = 5</p>
-                            <p><strong>Jadi:</strong> (f ∘ g)(5) = 5</p>
+                        <div class="bg-white rounded-lg p-4">
+                            <p class="font-semibold text-red-700 mb-2">❌ Salah:</p>
+                            <p class="text-gray-700">(f ∘ g)(x) = f(x) × g(x)</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <p class="font-semibold text-green-700 mb-2">✅ Benar:</p>
+                            <p class="text-gray-700">(f ∘ g)(x) = f(g(x))</p>
+                        </div>
+                        <div class="mt-4 p-3 bg-red-100 rounded-lg">
+                            <p class="text-sm text-red-800">
+                                <strong>Ingat:</strong> Komposisi fungsi bukan perkalian! Ini adalah substitusi fungsi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-indigo-800 mb-3">🧮 Contoh dengan Fungsi Kuadrat</h3>
+                    <div class="bg-white rounded-lg p-4">
+                        <p><strong>Diketahui:</strong> f(x) = x² + 2x dan g(x) = x + 1</p>
+                        <p><strong>Tentukan:</strong> (f ∘ g)(x)</p>
+                        <div class="mt-3 space-y-2 text-sm">
+                            <p><strong>Langkah 1:</strong> g(x) = x + 1</p>
+                            <p><strong>Langkah 2:</strong> f(g(x)) = f(x + 1) = (x + 1)² + 2(x + 1)</p>
+                            <p><strong>Langkah 3:</strong> = x² + 2x + 1 + 2x + 2</p>
+                            <p><strong>Langkah 4:</strong> = x² + 4x + 3</p>
+                            <p><strong>Jadi:</strong> (f ∘ g)(x) = x² + 4x + 3</p>
                         </div>
                     </div>
                 </div>
@@ -201,21 +294,8 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Developer Section -->
-    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mt-4 text-center">
-        <div class="flex flex-col items-center space-y-4">
-            <img src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/guru%20gita.png" 
-                 alt="Guru Gita - Pengembang Aplikasi" 
-                 class="w-20 h-20 rounded-full border-4 border-white/30 shadow-lg"
-                 onerror="this.src=''; this.alt='Foto tidak dapat dimuat'; this.style.display='none';">
-            <div class="text-white">
-                <p class="text-lg font-semibold">Dikembangkan oleh:</p>
-                <p class="text-xl font-bold text-yellow-300">Gita Chandra Febriliana</p>
-                <p class="text-sm text-purple-100 mt-1">Pengembang Aplikasi Pembelajaran</p>
-            </div>
-        </div>
+
     </div>
 
     <!-- Error Modal -->
@@ -247,30 +327,30 @@
             {
                 functions: "f(x) = 2x + 3",
                 question: "Tentukan (f ∘ f ∘ f)(x)",
-                options: ["8x + 21", "6x + 9", "8x + 15", "4x + 12", "2x + 9"],
-                correct: 0,
+                options: ["6x + 9", "4x + 12", "8x + 21", "2x + 9", "8x + 15"],
+                correct: 2,
                 explanation: "f(f(x)) = f(2x+3) = 2(2x+3)+3 = 4x+9, kemudian f(f(f(x))) = f(4x+9) = 2(4x+9)+3 = 8x+21"
             },
             {
-                functions: "f(x) = <sup>7-3x</sup>/<sub>2x-3</sub>, g(x) = 4x + 2",
+                functions: "f(x) = <sup>2x-3</sup>/<sub>7-3x</sub>, g(x) = 4x + 2",
                 question: "Tentukan (g ∘ f)(x)",
-                options: ["<sup>22-12x</sup>/<sub>2x-3</sub>", "<sup>34-12x</sup>/<sub>2x-3</sub>", "<sup>22+12x</sup>/<sub>2x-3</sub>", "<sup>34+12x</sup>/<sub>2x-3</sub>", "<sup>28-12x</sup>/<sub>2x-3</sub>"],
-                correct: 1,
-                explanation: "g(f(x)) = 4((7-3x)/(2x-3)) + 2 = (28-12x)/(2x-3) + 2 = (28-12x+4x-6)/(2x-3) = (34-12x)/(2x-3)"
+                options: ["<sup>8x-12</sup>/<sub>7-3x</sub>", "<sup>8x+8</sup>/<sub>7-3x</sub>", "<sup>2x+2</sup>/<sub>7-3x</sub>", "<sup>8x-6</sup>/<sub>7-3x</sub>", "<sup>14-4x</sup>/<sub>7-3x</sub>"],
+                correct: 2,
+                explanation: "g(f(x)) = 4((2x-3)/(7-3x)) + 2 = (8x-12)/(7-3x) + 2 = (8x-12+2(7-3x))/(7-3x) = (8x-12+14-6x)/(7-3x) = (2x+2)/(7-3x)"
             },
             {
                 functions: "f(x) = 2x + 3, g(x) = x² - 1",
                 question: "Tentukan (f ∘ g)(3)",
-                options: ["19", "17", "21", "15", "23"],
-                correct: 0,
+                options: ["17", "19", "15", "21", "23"],
+                correct: 1,
                 explanation: "g(3) = 9 - 1 = 8, kemudian f(8) = 16 + 3 = 19"
             },
             {
-                functions: "f(x) = x² - 5x + 4, g(x) = x² + 3x - 6",
-                question: "Tentukan (f ∘ g)(2)",
-                options: ["0", "4", "-2", "8", "12"],
-                correct: 0,
-                explanation: "g(2) = (2)² + 3(2) - 6 = 4 + 6 - 6 = 4, kemudian f(4) = (4)² - 5(4) + 4 = 16 - 20 + 4 = 0"
+                functions: "f(x) = 2x² - 4x + 5",
+                question: "Tentukan f(x + 3)",
+                options: ["2x² + 12x + 23", "2x² + 4x + 14", "2x² + 6x + 20", "2x² + 8x + 17", "2x² + 8x + 11"],
+                correct: 4,
+                explanation: "f(x+3) = 2(x+3)² - 4(x+3) + 5 = 2(x² + 6x + 9) - 4x - 12 + 5 = 2x² + 12x + 18 - 4x - 12 + 5 = 2x² + 8x + 11"
             }
         ];
 
@@ -493,5 +573,5 @@
         // Initialize with material section
         showSection('material');
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c3211d62ec9c74',t:'MTc1NzM4MzYxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c410638318f916',t:'MTc1NzM5MzQxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
