@@ -3,1007 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎮 Function Composition Quest</title>
+    <title>Game Komposisi Fungsi - Belajar & Berlatih</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .math { font-family: 'Times New Roman', serif; }
+        
+        /* Celebration Animation */
+        @keyframes celebrate {
+            0% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-5deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            75% { transform: scale(1.1) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        .celebrate {
+            animation: celebrate 0.6s ease-in-out;
+        }
+        
+        /* Confetti Animation */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 min-h-screen text-white">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Game Header -->
+<body class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent mb-4">
-                🎮 Function Composition Quest
-            </h1>
-            <p class="text-xl text-blue-200">Petualangan Seru Menguasai Fungsi Komposisi!</p>
+            <h1 class="text-4xl font-bold text-white mb-2">📚 Komposisi Fungsi</h1>
+            <p class="text-purple-100 text-lg">Pelajari materi dan latihan soal komposisi fungsi</p>
         </div>
 
-        <!-- Game Stats -->
-        <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-8 backdrop-blur-sm">
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-                <div class="bg-green-500 bg-opacity-20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-green-400" id="score">0</div>
-                    <div class="text-sm text-green-300">Skor</div>
-                </div>
-                <div class="bg-blue-500 bg-opacity-20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-blue-400" id="level">1</div>
-                    <div class="text-sm text-blue-300">Level</div>
-                </div>
-                <div class="bg-yellow-500 bg-opacity-20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-yellow-400" id="lives">❤️❤️❤️</div>
-                    <div class="text-sm text-yellow-300">Nyawa</div>
-                </div>
-                <div class="bg-purple-500 bg-opacity-20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-purple-400" id="streak">0</div>
-                    <div class="text-sm text-purple-300">Streak</div>
-                </div>
-                <div class="bg-orange-500 bg-opacity-20 rounded-lg p-4">
-                    <div class="text-2xl font-bold text-orange-400" id="progress">1/3</div>
-                    <div class="text-sm text-orange-300">Progress</div>
-                </div>
+        <!-- Navigation -->
+        <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 mb-8">
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="showSection('material')" id="btn-material" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    📖 Pelajari Materi
+                </button>
+                <button onclick="showSection('game')" id="btn-game" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    🎯 Latihan Soal
+                </button>
             </div>
         </div>
 
-        <!-- Game Menu -->
-        <div id="gameMenu" class="space-y-6">
-            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm">
-                <h2 class="text-3xl font-bold text-center mb-8 text-yellow-400">🎯 Pilih Mode Permainan</h2>
-                
-                <div class="grid md:grid-cols-3 gap-6">
-                    <!-- Speed Challenge -->
-                    <div class="bg-gradient-to-br from-red-500 to-pink-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('speed')">
-                        <div class="text-center">
-                            <div class="text-4xl mb-4">⚡</div>
-                            <h3 class="text-xl font-bold mb-2">Speed Challenge</h3>
-                            <p class="text-sm opacity-90 mb-4">3 soal per level, waktu terbatas!</p>
-                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
-                                <p class="text-xs">• 3 soal mudah-sedang</p>
-                                <p class="text-xs">• Timer 60 detik</p>
-                                <p class="text-xs">• Bonus kecepatan</p>
-                            </div>
-                        </div>
+        <!-- Material Section -->
+        <div id="material-section" class="bg-white rounded-2xl shadow-2xl p-8 mb-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">📖 Materi: Komposisi Fungsi</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Definisi Komposisi Fungsi</h3>
+                    <p class="text-gray-700 mb-3">
+                        Komposisi fungsi adalah operasi yang menggabungkan dua fungsi atau lebih menjadi satu fungsi baru.
+                    </p>
+                    <div class="bg-white rounded-lg p-4 math text-lg">
+                        <strong>Notasi:</strong> (f ∘ g)(x) = f(g(x))
                     </div>
+                </div>
 
-                    <!-- Adventure Mode -->
-                    <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('adventure')">
-                        <div class="text-center">
-                            <div class="text-4xl mb-4">🗺️</div>
-                            <h3 class="text-xl font-bold mb-2">Adventure Mode</h3>
-                            <p class="text-sm opacity-90 mb-4">3 soal per lokasi dengan cerita!</p>
-                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
-                                <p class="text-xs">• Cerita RPG menarik</p>
-                                <p class="text-xs">• 3 soal per lokasi</p>
-                                <p class="text-xs">• Power-ups tersedia</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-green-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-green-800 mb-3">Langkah-langkah Menyelesaikan</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                        <li>Hitung nilai fungsi dalam kurung terlebih dahulu: g(x)</li>
+                        <li>Substitusikan hasil g(x) ke dalam fungsi luar: f(hasil g(x))</li>
+                        <li>Hitung nilai akhirnya</li>
+                    </ol>
+                </div>
 
-                    <!-- Boss Battle -->
-                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform" onclick="startGame('boss')">
-                        <div class="text-center">
-                            <div class="text-4xl mb-4">👹</div>
-                            <h3 class="text-xl font-bold mb-2">Boss Battle</h3>
-                            <p class="text-sm opacity-90 mb-4">3 serangan untuk kalahkan boss!</p>
-                            <div class="bg-white bg-opacity-20 rounded-lg p-2">
-                                <p class="text-xs">• Soal sulit</p>
-                                <p class="text-xs">• 3 serangan per boss</p>
-                                <p class="text-xs">• Reward besar</p>
-                            </div>
+                <div class="bg-yellow-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-yellow-800 mb-3">Contoh Sederhana</h3>
+                    <div class="space-y-3">
+                        <p><strong>Diketahui:</strong> f(x) = 2x + 1 dan g(x) = x - 3</p>
+                        <p><strong>Tentukan:</strong> (f ∘ g)(5)</p>
+                        <div class="bg-white rounded-lg p-4 space-y-2">
+                            <p><strong>Langkah 1:</strong> g(5) = 5 - 3 = 2</p>
+                            <p><strong>Langkah 2:</strong> f(2) = 2(2) + 1 = 5</p>
+                            <p><strong>Jadi:</strong> (f ∘ g)(5) = 5</p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Tutorial Section -->
-            <div class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
-                <h3 class="text-2xl font-bold text-center mb-4 text-yellow-400">📚 Cara Bermain</h3>
-                <div class="grid md:grid-cols-3 gap-4">
-                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
-                        <h4 class="text-lg font-bold text-blue-400 mb-2">$(f \circ g)(x)$</h4>
-                        <p class="text-sm mb-2">$f(g(x))$ - Substitusi g(x) ke f(x)</p>
-                        <p class="text-xs text-gray-300">Contoh: $f(x) = 2x$, $g(x) = x+1$</p>
-                        <p class="text-xs text-gray-300">$(f \circ g)(x) = 2(x+1) = 2x+2$</p>
-                    </div>
-                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
-                        <h4 class="text-lg font-bold text-green-400 mb-2">$(g \circ f)(x)$</h4>
-                        <p class="text-sm mb-2">$g(f(x))$ - Substitusi f(x) ke g(x)</p>
-                        <p class="text-xs text-gray-300">Contoh: $f(x) = 2x$, $g(x) = x+1$</p>
-                        <p class="text-xs text-gray-300">$(g \circ f)(x) = 2x+1$</p>
-                    </div>
-                    <div class="bg-black bg-opacity-30 rounded-lg p-4">
-                        <h4 class="text-lg font-bold text-purple-400 mb-2">$(f \circ g)(a)$</h4>
-                        <p class="text-sm mb-2">Nilai numerik komposisi</p>
-                        <p class="text-xs text-gray-300">Contoh: $(f \circ g)(2)$</p>
-                        <p class="text-xs text-gray-300">Hitung $g(2)$ dulu, lalu $f(g(2))$</p>
-                    </div>
-                </div>
-                <div class="mt-4 bg-gradient-to-r from-orange-500 to-red-500 bg-opacity-20 rounded-lg p-4">
-                    <h4 class="text-lg font-bold text-orange-400 mb-2">$(f \circ g \circ h)(x)$ - Triple Composition</h4>
-                    <p class="text-sm">$f(g(h(x)))$ - Mulai dari dalam: hitung $h(x)$, lalu $g(h(x))$, terakhir $f(g(h(x)))$</p>
-                </div>
-            </div>
-
-            <!-- Developer Section -->
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 bg-opacity-20 rounded-xl p-6 backdrop-blur-sm mb-6">
-                <h3 class="text-2xl font-bold text-center mb-4 text-yellow-400">👨‍💻 Pengembang Aplikasi</h3>
-                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6">
-                    <div class="flex-shrink-0">
-                        <img src="https://github.com/gitachandra34-del/dunia-komposisi/blob/main/guru%20gita.png?raw=true" 
-                             alt="Guru Gita - Pengembang Aplikasi" 
-                             class="w-24 h-24 rounded-full border-4 border-yellow-400 shadow-lg"
-                             onerror="this.src=''; this.alt='Foto pengembang tidak dapat dimuat'; this.style.display='none';">
-                    </div>
-                    <div class="text-center md:text-left">
-                        <h4 class="text-xl font-bold text-white mb-2">Guru Gita</h4>
-                        <p class="text-blue-200 text-sm mb-2">🎓 Pengembang Function Composition Quest</p>
-                        <p class="text-gray-300 text-xs">Menciptakan pembelajaran matematika yang menyenangkan dan interaktif</p>
-                        <div class="flex justify-center md:justify-start space-x-2 mt-3">
-                            <span class="bg-blue-500 bg-opacity-30 px-3 py-1 rounded-full text-xs">📚 Educator</span>
-                            <span class="bg-green-500 bg-opacity-30 px-3 py-1 rounded-full text-xs">💻 Developer</span>
-                            <span class="bg-purple-500 bg-opacity-30 px-3 py-1 rounded-full text-xs">🎮 Game Designer</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Leaderboard -->
-            <div class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm">
-                <h3 class="text-2xl font-bold text-center mb-4 text-yellow-400">🏆 Papan Skor Tertinggi</h3>
-                <div id="leaderboard" class="space-y-2">
-                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
-                        <span>🥇 Master Function</span>
-                        <span class="font-bold">2500 pts</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
-                        <span>🥈 Composition King</span>
-                        <span class="font-bold">2100 pts</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-white bg-opacity-10 rounded-lg p-3">
-                        <span>🥉 Function Hero</span>
-                        <span class="font-bold">1800 pts</span>
-                    </div>
+                <div class="text-center">
+                    <button onclick="showSection('game')" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                        Mulai Latihan Soal →
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- Game Area -->
-        <div id="gameArea" class="hidden">
-            <!-- Timer (Speed Mode) -->
-            <div id="timerArea" class="text-center mb-6 hidden">
-                <div class="bg-red-500 bg-opacity-20 rounded-xl p-4 inline-block">
-                    <div class="text-3xl font-bold text-red-400" id="timer">60</div>
-                    <div class="text-sm text-red-300">Detik Tersisa</div>
-                </div>
-            </div>
 
-            <!-- Boss Health (Boss Mode) -->
-            <div id="bossArea" class="hidden mb-6">
-                <div class="bg-black bg-opacity-30 rounded-xl p-6">
-                    <div class="text-center mb-4">
-                        <h3 class="text-2xl font-bold text-red-400" id="bossName">Boss Name</h3>
-                        <p class="text-sm text-red-300" id="bossDescription">Boss Description</p>
+
+        <!-- Game Section -->
+        <div id="game-section" class="hidden">
+            <!-- Score Board -->
+            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mb-8 text-center">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-white/20 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-white" id="score">0</div>
+                        <div class="text-purple-100">Skor</div>
                     </div>
-                    <div class="bg-red-900 rounded-full h-6 overflow-hidden mb-2">
-                        <div class="bg-gradient-to-r from-red-500 to-red-600 h-full transition-all duration-500" id="bossHp" style="width: 100%"></div>
+                    <div class="bg-white/20 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-white" id="question-number">1</div>
+                        <div class="text-purple-100">Soal ke-</div>
                     </div>
-                    <div class="text-center">
-                        <span class="text-red-300 text-sm" id="bossHpText">100/100 HP</span>
+                    <div class="bg-white/20 rounded-lg p-4">
+                        <div class="text-2xl font-bold text-white" id="total-questions">4</div>
+                        <div class="text-purple-100">Total Soal</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Adventure Story (Adventure Mode) -->
-            <div id="storyArea" class="hidden mb-6">
-                <div class="bg-gradient-to-r from-green-500 to-blue-500 bg-opacity-20 rounded-xl p-6">
-                    <div class="flex items-center space-x-4">
-                        <div class="text-4xl" id="storyIcon">🏰</div>
-                        <div>
-                            <h3 class="text-xl font-bold text-yellow-400" id="storyTitle">Lokasi</h3>
-                            <p class="text-sm text-blue-200" id="storyText">Cerita petualangan...</p>
+            <!-- Game Area -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 mb-6" id="game-area">
+                <!-- Question -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Soal:</h2>
+                    <div class="bg-blue-50 rounded-lg p-6 mb-4">
+                        <div class="text-lg text-gray-700 mb-4" id="functions">
+                            <!-- Functions will be displayed here -->
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Question Area -->
-            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm mb-6">
-                <div class="text-center mb-6">
-                    <div class="text-lg text-blue-300 mb-2" id="questionType">Tentukan Fungsi Komposisi</div>
-                    <div class="text-3xl font-bold text-yellow-400" id="questionNumber">Soal 1/3</div>
-                </div>
-
-                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
-                    <div id="functionDisplay" class="text-center space-y-4">
-                        <div class="text-xl">
-                            <span class="text-blue-300">f(x) = </span>
-                            <span id="funcF" class="text-white font-mono">2x + 1</span>
-                        </div>
-                        <div class="text-xl">
-                            <span class="text-green-300">g(x) = </span>
-                            <span id="funcG" class="text-white font-mono">x - 3</span>
-                        </div>
-                        <div class="text-2xl text-yellow-400 mt-4">
-                            Tentukan: <span id="questionTarget">(f ∘ g)(x)</span>
+                        <div class="text-xl font-semibold text-blue-800 math" id="question">
+                            <!-- Question will be displayed here -->
                         </div>
                     </div>
                 </div>
 
                 <!-- Answer Options -->
-                <div id="answerOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Options will be generated dynamically -->
+                <div class="space-y-3" id="options">
+                    <!-- Options will be generated here -->
                 </div>
-            </div>
 
-            <!-- Power-ups (Adventure & Boss Mode) -->
-            <div id="powerupsArea" class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-sm mb-6 hidden">
-                <h3 class="text-lg font-bold text-yellow-400 mb-4">🔮 Power-ups</h3>
-                <div class="grid grid-cols-3 gap-4">
-                    <button id="hint-btn" onclick="useHint()" class="bg-blue-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
-                        <div class="text-2xl">💡</div>
-                        <div class="text-xs">Hint</div>
-                        <div class="text-xs" id="hintCount">3</div>
-                    </button>
-                    <button id="skip-btn" onclick="skipQuestion()" class="bg-yellow-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
-                        <div class="text-2xl">⏭️</div>
-                        <div class="text-xs">Skip</div>
-                        <div class="text-xs" id="skipCount">2</div>
-                    </button>
-                    <button id="double-btn" onclick="activateDouble()" class="bg-purple-500 bg-opacity-30 hover:bg-opacity-50 rounded-lg p-3 transition-all">
-                        <div class="text-2xl">✨</div>
-                        <div class="text-xs">2x Skor</div>
-                        <div class="text-xs" id="doubleCount">1</div>
+                <!-- Next Button -->
+                <div class="text-center mt-8">
+                    <button id="next-btn" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 shadow-lg transform hover:scale-105 hidden">
+                        <span class="flex items-center justify-center">
+                            <span>Soal Berikutnya</span>
+                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </span>
                     </button>
                 </div>
             </div>
 
-            <!-- Back to Menu -->
-            <div class="text-center">
-                <button onclick="backToMenu()" class="bg-gray-500 bg-opacity-30 hover:bg-opacity-50 text-white font-bold py-3 px-6 rounded-xl transition-all">
-                    🏠 Kembali ke Menu
-                </button>
-            </div>
-        </div>
-
-        <!-- Level Complete Screen -->
-        <div id="levelCompleteScreen" class="hidden">
-            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm text-center">
-                <div class="text-6xl mb-4">🎊</div>
-                <h2 class="text-4xl font-bold mb-4 text-yellow-400">Level Selesai!</h2>
-                <div class="text-2xl mb-6">
-                    <div class="text-green-400">Level <span id="completedLevel" class="font-bold">1</span> - <span id="completedMode" class="font-bold">Mode</span></div>
-                    <div class="text-blue-400 mt-2">Skor Level: <span id="levelScore" class="font-bold">0</span></div>
+            <!-- Result Screen -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 text-center hidden" id="result-screen">
+                <div class="text-6xl mb-4" id="result-emoji">🎉</div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4" id="result-title">Selamat!</h2>
+                <p class="text-xl text-gray-600 mb-6" id="result-message">Kamu telah menyelesaikan semua soal!</p>
+                <div class="bg-blue-50 rounded-lg p-6 mb-6">
+                    <div class="text-4xl font-bold text-blue-600 mb-2" id="final-score">0</div>
+                    <div class="text-gray-600">Skor Akhir</div>
                 </div>
-                
-                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
-                    <h3 class="text-xl font-bold text-yellow-400 mb-4">📊 Hasil Level</h3>
-                    <div class="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                            <div class="text-2xl font-bold text-green-400" id="levelCorrect">0</div>
-                            <div>Benar</div>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-red-400" id="levelWrong">0</div>
-                            <div>Salah</div>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-blue-400" id="levelAccuracy">0%</div>
-                            <div>Akurasi</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-gradient-to-r from-purple-500 to-pink-500 bg-opacity-20 rounded-xl p-4 mb-6">
-                    <p class="text-lg">🎯 Kembali ke menu untuk memilih level atau mode lain!</p>
-                    <p class="text-sm text-gray-300 mt-2">Otomatis kembali dalam <span id="countdown">3</span> detik...</p>
-                </div>
-
-                <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
-                    🏠 Kembali ke Menu Sekarang
-                </button>
-            </div>
-        </div>
-
-        <!-- Game Over Screen -->
-        <div id="gameOverScreen" class="hidden">
-            <div class="bg-white bg-opacity-10 rounded-xl p-8 backdrop-blur-sm text-center">
-                <div class="text-6xl mb-4" id="gameOverEmoji">🎉</div>
-                <h2 class="text-4xl font-bold mb-4" id="gameOverTitle">Permainan Selesai!</h2>
-                <div class="text-2xl mb-6">
-                    <div class="text-yellow-400">Skor Akhir: <span id="finalScore" class="font-bold">0</span></div>
-                    <div class="text-blue-400 mt-2">Level Tertinggi: <span id="finalLevel" class="font-bold">1</span></div>
-                </div>
-                
-                <div class="bg-black bg-opacity-30 rounded-xl p-6 mb-6">
-                    <h3 class="text-xl font-bold text-yellow-400 mb-4">📊 Statistik Permainan</h3>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
-                        <div>Soal Dijawab: <span id="totalAnswered" class="font-bold">0</span></div>
-                        <div>Jawaban Benar: <span id="totalCorrect" class="font-bold">0</span></div>
-                        <div>Akurasi: <span id="accuracy" class="font-bold">0%</span></div>
-                        <div>Streak Terpanjang: <span id="maxStreak" class="font-bold">0</span></div>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
-                        🔄 Main Lagi
+                <div class="space-x-4">
+                    <button onclick="restartGame()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
+                        Main Lagi
                     </button>
-                    <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-xl transition-all">
-                        🏠 Menu Utama
+                    <button onclick="showSection('material')" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200">
+                        Pelajari Lagi
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Developer Section -->
+    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 mt-4 text-center">
+        <div class="flex flex-col items-center space-y-4">
+            <img src="https://raw.githubusercontent.com/gitachandra34-del/dunia-komposisi/refs/heads/main/guru%20gita.png" 
+                 alt="Guru Gita - Pengembang Aplikasi" 
+                 class="w-20 h-20 rounded-full border-4 border-white/30 shadow-lg"
+                 onerror="this.src=''; this.alt='Foto tidak dapat dimuat'; this.style.display='none';">
+            <div class="text-white">
+                <p class="text-lg font-semibold">Dikembangkan oleh:</p>
+                <p class="text-xl font-bold text-yellow-300">Gita Chandra Febriliana</p>
+                <p class="text-sm text-purple-100 mt-1">Pengembang Aplikasi Pembelajaran</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="text-6xl mb-4">😔</div>
+            <h3 class="text-2xl font-bold text-red-600 mb-3">Jawaban Salah!</h3>
+            <p class="text-gray-600 mb-4" id="error-explanation">
+                <!-- Explanation will be shown here -->
+            </p>
+            <div class="bg-red-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-red-700">
+                    <strong>Jawaban yang benar:</strong> <span id="correct-answer"></span>
+                </p>
+            </div>
+            <button onclick="closeErrorModal()" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
     <script>
-        let gameState = {
-            mode: '',
-            score: 0,
-            level: 1,
-            lives: 3,
-            streak: 0,
-            maxStreak: 0,
-            totalAnswered: 0,
-            totalCorrect: 0,
-            currentQuestion: {},
-            timer: 60,
-            timerInterval: null,
-            powerups: {
-                hints: 3,
-                skips: 2,
-                double: 1
+        let currentQuestion = 0;
+        let score = 0;
+        let totalQuestions = 4;
+        let selectedAnswer = null;
+
+        const questions = [
+            {
+                functions: "f(x) = 2x + 3",
+                question: "Tentukan (f ∘ f ∘ f)(x)",
+                options: ["8x + 21", "6x + 9", "8x + 15", "4x + 12", "2x + 9"],
+                correct: 0,
+                explanation: "f(f(x)) = f(2x+3) = 2(2x+3)+3 = 4x+9, kemudian f(f(f(x))) = f(4x+9) = 2(4x+9)+3 = 8x+21"
             },
-            doubleActive: false,
-            boss: {
-                name: '',
-                maxHp: 100,
-                currentHp: 100
+            {
+                functions: "f(x) = <sup>7-3x</sup>/<sub>2x-3</sub>, g(x) = 4x + 2",
+                question: "Tentukan (g ∘ f)(x)",
+                options: ["<sup>22-12x</sup>/<sub>2x-3</sub>", "<sup>34-12x</sup>/<sub>2x-3</sub>", "<sup>22+12x</sup>/<sub>2x-3</sub>", "<sup>34+12x</sup>/<sub>2x-3</sub>", "<sup>28-12x</sup>/<sub>2x-3</sub>"],
+                correct: 1,
+                explanation: "g(f(x)) = 4((7-3x)/(2x-3)) + 2 = (28-12x)/(2x-3) + 2 = (28-12x+4x-6)/(2x-3) = (34-12x)/(2x-3)"
             },
-            questionsInLevel: 0, // Track questions answered in current level
-            maxQuestionsPerLevel: 3, // Exactly 3 questions per level
-            levelStartScore: 0, // Score at start of level
-            levelCorrectAnswers: 0, // Correct answers in current level
-            levelWrongAnswers: 0, // Wrong answers in current level
-            countdownInterval: null // For auto-return countdown
-        };
-
-        // Question banks - 3 questions per level for each mode
-        const speedQuestions = {
-            1: [
-                {
-                    f: "x + 1", g: "x + 2", answer: "x + 3", type: "fog",
-                    options: ["x + 1", "x + 3", "x + 2", "2x + 1"],
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "x + 3", g: "x + 1", answer: "x + 4", type: "gof",
-                    options: ["x + 3", "x + 1", "x + 4", "2x + 4"],
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "2x", g: "x + 1", answer: "3", type: "numerical",
-                    options: ["1", "2", "3", "4"],
-                    question: "(f ∘ g)(1)", value: 1
-                }
-            ],
-            2: [
-                {
-                    f: "2x", g: "x + 1", answer: "2x + 2", type: "fog",
-                    options: ["2x + 1", "3x + 1", "2x + 2", "x + 2"],
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "x + 2", g: "2x", answer: "4x + 2", type: "gof",
-                    options: ["3x + 2", "2x", "x + 4", "4x + 2"],
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x - 1", g: "2x + 3", answer: "7", type: "numerical",
-                    options: ["5", "6", "7", "8"],
-                    question: "(f ∘ g)(2)", value: 2
-                }
-            ],
-            3: [
-                {
-                    f: "x - 1", g: "x + 2", answer: "x + 1", type: "fog",
-                    options: ["x - 1", "x + 2", "x + 1", "2x + 1"],
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "2x + 1", g: "x", answer: "2x + 1", type: "gof",
-                    options: ["2x", "2x + 1", "x + 1", "3x + 1"],
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "3x - 2", g: "x + 1", answer: "4", type: "numerical",
-                    options: ["2", "3", "4", "5"],
-                    question: "(f ∘ g)(2)", value: 2
-                }
-            ]
-        };
-
-        const adventureQuestions = {
-            1: [
-                {
-                    f: "x^2", g: "x + 1", answer: "x^2 + 2x + 1", type: "fog",
-                    options: ["x^2 + 1", "x^2 + 2x + 1", "x^2 + x + 1", "2x^2 + 1"],
-                    story: "🏰 Kastil Ajaib: Kekuatan sihir meningkat!",
-                    icon: "🏰", question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "2x + 3", g: "x - 1", answer: "x + 2", type: "gof",
-                    options: ["2x + 3", "2x - 1", "x + 2", "3x + 2"],
-                    story: "🏰 Kastil Ajaib: Mantra perlindungan aktif!",
-                    icon: "🏰", question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x + 2", g: "3x", h: "x - 1", answer: "3x + 5", type: "triple",
-                    options: ["4x + 2", "3x + 6", "x + 6", "3x + 5"],
-                    story: "🏰 Kastil Ajaib: Gerbang terbuka!",
-                    icon: "🏰", question: "(f ∘ g ∘ h)(x)"
-                }
-            ],
-            2: [
-                {
-                    f: "x^2 - 1", g: "x + 2", answer: "x^2 + 4x + 3", type: "fog",
-                    options: ["x^2 + 2x - 1", "x^2 + 4x + 3", "x^2 + 4x - 1", "x^2 + 2x + 3"],
-                    story: "🗡️ Gua Kristal: Pedang ajaib membutuhkan formula!",
-                    icon: "💎", question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "3x - 2", g: "2x + 1", answer: "6x - 1", type: "gof",
-                    options: ["6x - 1", "5x + 1", "6x + 1", "6x - 2"],
-                    story: "🗡️ Gua Kristal: Kristal berkilau terang!",
-                    icon: "💎", question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x^2", g: "2x", h: "x + 1", answer: "4x^2 + 16x + 16", type: "triple",
-                    options: ["2x^2 - 1", "4x^2 + 16x + 16", "x^2 - 4x + 2", "2x^2 - 4x + 2"],
-                    story: "🗡️ Gua Kristal: Harta karun ditemukan!",
-                    icon: "💎", question: "(f ∘ g ∘ h)(x)"
-                }
-            ],
-            3: [
-                {
-                    f: "x^2 + x", g: "x - 2", answer: "x^2 - 3x + 2", type: "fog",
-                    options: ["x^2 + x - 2", "x^2 - x - 2", "x^2 - 3x + 2", "x^2 - 2x + 1"],
-                    story: "🏹 Menara Sihir: Panah elemental siap diluncurkan!",
-                    icon: "🗼", question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "4x + 1", g: "x^2", answer: "x^2 + 4", type: "gof",
-                    options: ["4x^2", "x^2 + 4", "x^2 + 1", "4x + x^2"],
-                    story: "🏹 Menara Sihir: Kekuatan maksimal tercapai!",
-                    icon: "🗼", question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x - 3", g: "2x + 1", answer: "-5", type: "numerical",
-                    options: ["2x + 1", "-3", "-5", "2x - 2"],
-                    story: "🏹 Menara Sihir: Misi berhasil diselesaikan!",
-                    icon: "🗼", question: "(f ∘ g)(-2)", value: -2
-                }
-            ]
-        };
-
-        const bossQuestions = {
-            1: [
-                {
-                    f: "x^3 + 2x^2 - x + 1", g: "x - 1", answer: "x^3 - x^2 - 2x + 2", type: "fog",
-                    options: ["x^3 + 2x^2 - x", "x^3 - x^2 + 2x + 1", "x^3 - x^2 - 2x + 2", "x^3 + x^2 - 3x + 2"],
-                    boss: "Goblin King", hp: 100,
-                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "2x^2 + 3x - 4", g: "x^2 + 1", answer: "x^4 + 2x^2 + 4", type: "gof",
-                    options: ["2x^4 + 3x^2 - 4", "x^4 + 2x^2 + 4", "2x^4 + 2x^2 + 3x - 4", "2x^4 + 5x^2 - 1"],
-                    boss: "Goblin King", hp: 100,
-                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x^2", g: "2x - 1", h: "x + 3", answer: "4x^2 + 20x + 25", type: "triple",
-                    options: ["4x^2 - 6x + 1", "4x^2 + 20x + 25", "2x^2 - 7x + 3", "4x^2 - 8x + 3"],
-                    boss: "Goblin King", hp: 100,
-                    description: "Raja Goblin menguasai fungsi kubik kompleks!",
-                    question: "(f ∘ g ∘ h)(x)"
-                }
-            ],
-            2: [
-                {
-                    f: "x^3 - 2x^2 + x - 3", g: "x + 2", answer: "x^3 + 4x^2 + 3x + 1", type: "fog",
-                    options: ["x^3 + 2x^2 - x - 1", "x^3 - 2x^2 + x + 5", "x^3 + 6x^2 + 11x + 5", "x^3 + 4x^2 + 3x + 1"],
-                    boss: "Dragon Lord", hp: 150,
-                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "3x^2 - 4x + 1", g: "x^2 - 2x + 1", answer: "x^4 - 4x^3 + 7x^2 - 6x + 2", type: "gof",
-                    options: ["3x^4 - 12x^3 + 13x^2 - 6x + 1", "x^4 - 4x^3 + 7x^2 - 6x + 2", "3x^4 - 16x^3 + 25x^2 - 10x + 2", "3x^4 - 4x^3 + x^2 - 2x + 1"],
-                    boss: "Dragon Lord", hp: 150,
-                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "2x^3 + x - 5", g: "x - 3", answer: "-52", type: "numerical",
-                    options: ["-50", "-52", "-48", "-54"],
-                    boss: "Dragon Lord", hp: 150,
-                    description: "Naga Penguasa dengan fungsi polinomial tingkat tinggi!",
-                    question: "(f ∘ g)(0)", value: 0
-                }
-            ],
-            3: [
-                {
-                    f: "x^4 - 2x^3 + x^2 - 1", g: "x + 1", answer: "x^4 + 2x^3 - x^2 + 2x", type: "fog",
-                    options: ["x^4 - 2x^3 + x^2", "x^4 + 4x^3 + 6x^2 + 4x", "x^4 - x^2 - 1", "x^4 + 2x^3 - x^2 + 2x"],
-                    boss: "Demon Emperor", hp: 200,
-                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
-                    question: "(f ∘ g)(x)"
-                },
-                {
-                    f: "3x^3 - 5x^2 + 2x - 7", g: "2x - 1", answer: "x^3 - 2x^2 + x - 2", type: "gof",
-                    options: ["24x^3 - 36x^2 + 14x - 8", "x^3 - 2x^2 + x - 2", "24x^3 - 54x^2 + 37x - 10", "24x^3 - 60x^2 + 44x - 12"],
-                    boss: "Demon Emperor", hp: 200,
-                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
-                    question: "(g ∘ f)(x)"
-                },
-                {
-                    f: "x^2 + 3x - 2", g: "x^3 - x + 1", h: "x - 1", answer: "x^9 - 3x^7 + 6x^6 - 3x^5 + 3x^4 - 6x^3 + 6x^2 - 3x + 1", type: "triple",
-                    options: ["x^6 - x^4 + 4x^3 - x + 1", "x^6 + 6x^4 - 2x^3 + 3x^2 - 5x + 1", "x^5 + 3x^4 - 2x^3 - x + 1", "x^9 - 3x^7 + 6x^6 - 3x^5 + 3x^4 - 6x^3 + 6x^2 - 3x + 1"],
-                    boss: "Demon Emperor", hp: 200,
-                    description: "Kaisar Iblis dengan fungsi derajat 4 yang mengerikan!",
-                    question: "(f ∘ g ∘ h)(x)"
-                }
-            ]
-        };
-
-        function startGame(mode) {
-            gameState.mode = mode;
-            gameState.score = 0;
-            gameState.level = 1;
-            gameState.lives = 3;
-            gameState.streak = 0;
-            gameState.totalAnswered = 0;
-            gameState.totalCorrect = 0;
-            gameState.questionsInLevel = 0;
-            gameState.levelStartScore = 0;
-            gameState.levelCorrectAnswers = 0;
-            gameState.levelWrongAnswers = 0;
-            gameState.powerups = { hints: 3, skips: 2, double: 1 };
-            
-            document.getElementById('gameMenu').classList.add('hidden');
-            document.getElementById('gameArea').classList.remove('hidden');
-            
-            // Show/hide mode-specific elements
-            if (mode === 'speed') {
-                document.getElementById('timerArea').classList.remove('hidden');
-                document.getElementById('powerupsArea').classList.add('hidden');
-                document.getElementById('bossArea').classList.add('hidden');
-                document.getElementById('storyArea').classList.add('hidden');
-                startTimer();
-            } else if (mode === 'adventure') {
-                document.getElementById('timerArea').classList.add('hidden');
-                document.getElementById('powerupsArea').classList.remove('hidden');
-                document.getElementById('bossArea').classList.add('hidden');
-                document.getElementById('storyArea').classList.remove('hidden');
-            } else if (mode === 'boss') {
-                document.getElementById('timerArea').classList.add('hidden');
-                document.getElementById('powerupsArea').classList.remove('hidden');
-                document.getElementById('bossArea').classList.remove('hidden');
-                document.getElementById('storyArea').classList.add('hidden');
+            {
+                functions: "f(x) = 2x + 3, g(x) = x² - 1",
+                question: "Tentukan (f ∘ g)(3)",
+                options: ["19", "17", "21", "15", "23"],
+                correct: 0,
+                explanation: "g(3) = 9 - 1 = 8, kemudian f(8) = 16 + 3 = 19"
+            },
+            {
+                functions: "f(x) = x² - 5x + 4, g(x) = x² + 3x - 6",
+                question: "Tentukan (f ∘ g)(2)",
+                options: ["0", "4", "-2", "8", "12"],
+                correct: 0,
+                explanation: "g(2) = (2)² + 3(2) - 6 = 4 + 6 - 6 = 4, kemudian f(4) = (4)² - 5(4) + 4 = 16 - 20 + 4 = 0"
             }
+        ];
+
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('material-section').classList.add('hidden');
+            document.getElementById('game-section').classList.add('hidden');
             
-            generateQuestion();
-            updateUI();
+            // Reset button styles
+            document.getElementById('btn-material').className = "bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors";
+            document.getElementById('btn-game').className = "bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors";
+            
+            // Show selected section and highlight button
+            if (section === 'material') {
+                document.getElementById('material-section').classList.remove('hidden');
+                document.getElementById('btn-material').className = "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors";
+            } else if (section === 'game') {
+                document.getElementById('game-section').classList.remove('hidden');
+                document.getElementById('btn-game').className = "bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors";
+                if (currentQuestion === 0 && score === 0) {
+                    displayQuestion();
+                }
+            }
         }
 
-        function generateQuestion() {
-            let questions;
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('functions').innerHTML = question.functions;
+            document.getElementById('question').innerHTML = question.question;
             
-            // Get questions for current level
-            switch(gameState.mode) {
-                case 'speed':
-                    questions = speedQuestions[gameState.level] || speedQuestions[3];
-                    break;
-                case 'adventure':
-                    questions = adventureQuestions[gameState.level] || adventureQuestions[3];
-                    break;
-                case 'boss':
-                    questions = bossQuestions[gameState.level] || bossQuestions[3];
-                    break;
-            }
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
             
-            // Get the specific question for this position in the level
-            const questionIndex = gameState.questionsInLevel % gameState.maxQuestionsPerLevel;
-            const question = questions[questionIndex];
-            gameState.currentQuestion = question;
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200 math text-lg';
+                button.innerHTML = `<span class="font-semibold text-purple-600">${String.fromCharCode(65 + index)}.</span> ${option}`;
+                button.onclick = () => selectAnswer(index, button);
+                optionsContainer.appendChild(button);
+            });
             
-            // Update display based on mode
-            if (gameState.mode === 'adventure') {
-                document.getElementById('storyIcon').textContent = question.icon;
-                document.getElementById('storyTitle').textContent = `Level ${gameState.level} - Petualangan`;
-                document.getElementById('storyText').textContent = question.story;
-            } else if (gameState.mode === 'boss') {
-                if (gameState.questionsInLevel === 0) {
-                    // New boss
-                    gameState.boss.name = question.boss;
-                    gameState.boss.maxHp = question.hp;
-                    gameState.boss.currentHp = question.hp;
+            document.getElementById('question-number').textContent = currentQuestion + 1;
+            document.getElementById('next-btn').style.display = 'none';
+            selectedAnswer = null;
+        }
+
+        function selectAnswer(answerIndex, buttonElement) {
+            if (selectedAnswer !== null) return;
+            
+            selectedAnswer = answerIndex;
+            const question = questions[currentQuestion];
+            const buttons = document.querySelectorAll('#options button');
+            
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === question.correct) {
+                    btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                } else if (index === answerIndex && answerIndex !== question.correct) {
+                    btn.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
                 }
-                document.getElementById('bossName').textContent = question.boss;
-                document.getElementById('bossDescription').textContent = question.description;
-                updateBossHealth();
-            }
+            });
             
-            // Update function display based on question type
-            let functionDisplayHTML = '';
-            if (question.type === 'triple') {
-                functionDisplayHTML = `
-                    <div class="text-xl">
-                        <span class="text-blue-300">f(x) = </span>
-                        <span class="text-white font-mono">${question.f}</span>
-                    </div>
-                    <div class="text-xl">
-                        <span class="text-green-300">g(x) = </span>
-                        <span class="text-white font-mono">${question.g}</span>
-                    </div>
-                    <div class="text-xl">
-                        <span class="text-purple-300">h(x) = </span>
-                        <span class="text-white font-mono">${question.h}</span>
-                    </div>
-                    <div class="text-2xl text-yellow-400 mt-4">
-                        Tentukan: <span>${question.question}</span>
-                    </div>
-                `;
-            } else if (question.type === 'numerical') {
-                functionDisplayHTML = `
-                    <div class="text-xl">
-                        <span class="text-blue-300">f(x) = </span>
-                        <span class="text-white font-mono">${question.f}</span>
-                    </div>
-                    <div class="text-xl">
-                        <span class="text-green-300">g(x) = </span>
-                        <span class="text-white font-mono">${question.g}</span>
-                    </div>
-                    <div class="text-2xl text-yellow-400 mt-4">
-                        Tentukan: <span>${question.question}</span>
-                    </div>
-                `;
+            if (answerIndex === question.correct) {
+                score += 20;
+                document.getElementById('score').textContent = score;
+                // Celebration for correct answer
+                showCelebration();
+                buttonElement.classList.add('celebrate');
             } else {
-                functionDisplayHTML = `
-                    <div class="text-xl">
-                        <span class="text-blue-300">f(x) = </span>
-                        <span class="text-white font-mono">${question.f}</span>
-                    </div>
-                    <div class="text-xl">
-                        <span class="text-green-300">g(x) = </span>
-                        <span class="text-white font-mono">${question.g}</span>
-                    </div>
-                    <div class="text-2xl text-yellow-400 mt-4">
-                        Tentukan: <span>${question.question}</span>
-                    </div>
-                `;
+                // Show error modal for wrong answer
+                showErrorModal(question);
             }
             
-            document.getElementById('functionDisplay').innerHTML = functionDisplayHTML;
-            
-            // Update question number to show progress in level
-            const questionInLevel = (gameState.questionsInLevel % gameState.maxQuestionsPerLevel) + 1;
-            document.getElementById('questionNumber').textContent = `Soal ${questionInLevel}/3`;
-            
-            // Generate answer options
-            const optionsHTML = question.options.map((option, index) => {
-                const displayOption = question.type === 'numerical' ? option : `$${option}$`;
-                return `<button onclick="selectAnswer('${option}')" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-xl p-4 text-lg font-mono transition-all transform hover:scale-105">
-                    ${String.fromCharCode(65 + index)}) ${displayOption}
-                </button>`;
-            }).join('');
-            
-            document.getElementById('answerOptions').innerHTML = optionsHTML;
-            
-            // Re-render MathJax
-            if (window.MathJax) {
-                MathJax.typesetPromise();
-            }
+            document.getElementById('next-btn').style.display = 'block';
         }
 
-        function selectAnswer(answer) {
-            gameState.totalAnswered++;
-            gameState.questionsInLevel++;
+        function showCelebration() {
+            // Create more confetti for spectacular effect
+            for (let i = 0; i < 100; i++) {
+                createConfetti();
+            }
             
-            if (answer === gameState.currentQuestion.answer) {
-                // Correct answer
-                gameState.totalCorrect++;
-                gameState.levelCorrectAnswers++;
-                gameState.streak++;
-                gameState.maxStreak = Math.max(gameState.maxStreak, gameState.streak);
-                
-                let points = 100 * gameState.level;
-                if (gameState.mode === 'speed') points = 50;
-                if (gameState.mode === 'boss') points = 200;
-                if (gameState.streak >= 3) points *= 1.5;
-                if (gameState.doubleActive) {
-                    points *= 2;
-                    gameState.doubleActive = false;
+            // Animate score
+            const scoreElement = document.getElementById('score');
+            scoreElement.classList.add('celebrate');
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                scoreElement.classList.remove('celebrate');
+            }, 600);
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            
+            // More vibrant colors
+            const colors = [
+                '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', 
+                '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43',
+                '#10ac84', '#ee5a24', '#0abde3', '#feca57', '#ff6348'
+            ];
+            
+            // Random shapes and sizes
+            const shapes = ['square', 'circle', 'triangle'];
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const size = Math.random() * 8 + 8; // 8-15px
+            
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.width = size + 'px';
+            confetti.style.height = size + 'px';
+            
+            // Different shapes
+            if (shape === 'circle') {
+                confetti.style.borderRadius = '50%';
+            } else if (shape === 'triangle') {
+                confetti.style.width = '0';
+                confetti.style.height = '0';
+                confetti.style.backgroundColor = 'transparent';
+                confetti.style.borderLeft = size/2 + 'px solid transparent';
+                confetti.style.borderRight = size/2 + 'px solid transparent';
+                confetti.style.borderBottom = size + 'px solid ' + colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            // Random position and animation
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = '-20px';
+            
+            const duration = Math.random() * 2 + 2; // 2-4 seconds
+            const rotation = Math.random() * 1080 + 360; // 360-1440 degrees
+            
+            confetti.style.animation = `confetti-fall ${duration}s linear forwards`;
+            confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            // Add rotation during fall
+            confetti.animate([
+                { transform: `translateY(-20px) rotate(0deg)`, opacity: 1 },
+                { transform: `translateY(100vh) rotate(${rotation}deg)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                easing: 'linear'
+            });
+            
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.remove();
                 }
-                
-                gameState.score += Math.floor(points);
-                
-                // Mode-specific effects
-                if (gameState.mode === 'boss') {
-                    const damage = Math.floor(gameState.boss.maxHp / 3); // 1/3 damage per correct answer
-                    gameState.boss.currentHp = Math.max(0, gameState.boss.currentHp - damage);
-                    showFeedback(true, `💥 Critical Hit! -${damage} HP! +${Math.floor(points)} poin`);
-                    
-                    if (gameState.boss.currentHp <= 0) {
-                        showBossDefeated();
-                        return;
-                    }
-                } else {
-                    showFeedback(true, `Benar! +${Math.floor(points)} poin`);
-                }
-                
+            }, duration * 1000 + 500);
+        }
+
+        function showErrorModal(question) {
+            document.getElementById('error-explanation').textContent = question.explanation;
+            document.getElementById('correct-answer').textContent = question.options[question.correct];
+            document.getElementById('error-modal').classList.remove('hidden');
+        }
+
+        function closeErrorModal() {
+            document.getElementById('error-modal').classList.add('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= totalQuestions) {
+                showResults();
             } else {
-                // Wrong answer
-                gameState.levelWrongAnswers++;
-                gameState.streak = 0;
-                if (gameState.mode !== 'boss') {
-                    gameState.lives--;
-                }
-                
-                showFeedback(false, `Salah! Jawaban benar: $${gameState.currentQuestion.answer}$`);
-                
-                if (gameState.lives <= 0 && gameState.mode !== 'boss') {
-                    endGame();
-                    return;
-                }
-            }
-            
-            // Check if level is complete (3 questions answered)
-            if (gameState.questionsInLevel % gameState.maxQuestionsPerLevel === 0) {
-                showLevelComplete();
-                return;
-            }
-            
-            updateUI();
-            
-            setTimeout(() => {
-                generateQuestion();
-            }, 2500);
-        }
-
-        function showFeedback(isCorrect, message) {
-            const feedback = document.createElement('div');
-            feedback.className = `fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-6 rounded-xl text-center text-white font-bold text-xl ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`;
-            feedback.innerHTML = `
-                <div class="text-4xl mb-2">${isCorrect ? '🎉' : '😞'}</div>
-                <div>${message}</div>
-            `;
-            
-            document.body.appendChild(feedback);
-            
-            setTimeout(() => {
-                document.body.removeChild(feedback);
-            }, 2000);
-        }
-
-        function showLevelComplete() {
-            // Calculate level statistics
-            const levelScore = gameState.score - gameState.levelStartScore;
-            const levelAccuracy = gameState.maxQuestionsPerLevel > 0 ? 
-                Math.round((gameState.levelCorrectAnswers / gameState.maxQuestionsPerLevel) * 100) : 0;
-            
-            // Update level complete screen
-            document.getElementById('completedLevel').textContent = gameState.level;
-            document.getElementById('completedMode').textContent = 
-                gameState.mode === 'speed' ? 'Speed Challenge' :
-                gameState.mode === 'adventure' ? 'Adventure Mode' : 'Boss Battle';
-            document.getElementById('levelScore').textContent = levelScore;
-            document.getElementById('levelCorrect').textContent = gameState.levelCorrectAnswers;
-            document.getElementById('levelWrong').textContent = gameState.levelWrongAnswers;
-            document.getElementById('levelAccuracy').textContent = levelAccuracy + '%';
-            
-            // Hide game area and show level complete screen
-            document.getElementById('gameArea').classList.add('hidden');
-            document.getElementById('levelCompleteScreen').classList.remove('hidden');
-            
-            // Start countdown to auto-return to menu
-            let countdown = 5;
-            document.getElementById('countdown').textContent = countdown;
-            
-            gameState.countdownInterval = setInterval(() => {
-                countdown--;
-                document.getElementById('countdown').textContent = countdown;
-                
-                if (countdown <= 0) {
-                    clearInterval(gameState.countdownInterval);
-                    backToMenu();
-                }
-            }, 1000);
-        }
-
-        function showLevelUp() {
-            const levelUp = document.createElement('div');
-            levelUp.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gradient-to-r from-yellow-400 to-orange-500 p-8 rounded-xl text-center text-white font-bold';
-            levelUp.innerHTML = `
-                <div class="text-6xl mb-4">🎊</div>
-                <div class="text-3xl">LEVEL UP!</div>
-                <div class="text-xl">Level ${gameState.level}</div>
-                <div class="text-sm mt-2">3 soal baru menanti!</div>
-            `;
-            
-            document.body.appendChild(levelUp);
-            
-            setTimeout(() => {
-                document.body.removeChild(levelUp);
-            }, 3000);
-        }
-
-        function showBossDefeated() {
-            const bossDefeated = document.createElement('div');
-            bossDefeated.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-gradient-to-r from-yellow-400 to-orange-500 p-8 rounded-xl text-center text-white font-bold';
-            bossDefeated.innerHTML = `
-                <div class="text-6xl mb-4">👑</div>
-                <div class="text-4xl mb-2">BOSS DEFEATED!</div>
-                <div class="text-2xl">${gameState.boss.name} telah dikalahkan!</div>
-                <div class="text-xl mt-2">+1000 Bonus Points!</div>
-            `;
-            
-            document.body.appendChild(bossDefeated);
-            gameState.score += 1000;
-            updateUI();
-            
-            setTimeout(() => {
-                document.body.removeChild(bossDefeated);
-                showLevelComplete();
-            }, 4000);
-        }
-
-        function startTimer() {
-            gameState.timer = 60;
-            gameState.timerInterval = setInterval(() => {
-                gameState.timer--;
-                document.getElementById('timer').textContent = gameState.timer;
-                
-                if (gameState.timer <= 0) {
-                    endGame();
-                }
-            }, 1000);
-        }
-
-        function useHint() {
-            if (gameState.powerups.hints > 0) {
-                gameState.powerups.hints--;
-                
-                const options = document.querySelectorAll('#answerOptions button');
-                const correctAnswer = gameState.currentQuestion.answer;
-                let removed = 0;
-                
-                options.forEach(option => {
-                    const optionText = option.textContent.split(') ')[1];
-                    if (optionText !== correctAnswer && removed < 2) {
-                        option.style.opacity = '0.3';
-                        option.disabled = true;
-                        removed++;
-                    }
-                });
-                
-                updateUI();
-                showFeedback(true, 'Hint digunakan! 2 opsi salah dihilangkan');
+                displayQuestion();
             }
         }
 
-        function skipQuestion() {
-            if (gameState.powerups.skips > 0) {
-                gameState.powerups.skips--;
-                gameState.totalAnswered++;
-                gameState.questionsInLevel++;
-                gameState.levelWrongAnswers++; // Count skip as wrong for level stats
-                
-                // Check if level is complete
-                if (gameState.questionsInLevel % gameState.maxQuestionsPerLevel === 0) {
-                    showLevelComplete();
-                    return;
-                }
-                
-                updateUI();
-                generateQuestion();
-                showFeedback(true, 'Soal dilewati!');
-            }
-        }
-
-        function activateDouble() {
-            if (gameState.powerups.double > 0) {
-                gameState.powerups.double--;
-                gameState.doubleActive = true;
-                updateUI();
-                showFeedback(true, 'Double Score aktif untuk soal berikutnya!');
-            }
-        }
-
-        function updateUI() {
-            document.getElementById('score').textContent = gameState.score;
-            document.getElementById('level').textContent = gameState.level;
-            document.getElementById('lives').textContent = '❤️'.repeat(gameState.lives);
-            document.getElementById('streak').textContent = gameState.streak;
+        function showResults() {
+            document.getElementById('game-area').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
             
-            // Update progress indicator
-            const questionInLevel = (gameState.questionsInLevel % gameState.maxQuestionsPerLevel) + 1;
-            document.getElementById('progress').textContent = `${questionInLevel}/3`;
+            const percentage = (score / (totalQuestions * 20)) * 100;
+            let emoji, title, message;
             
-            if (gameState.mode !== 'speed') {
-                document.getElementById('hintCount').textContent = gameState.powerups.hints;
-                document.getElementById('skipCount').textContent = gameState.powerups.skips;
-                document.getElementById('doubleCount').textContent = gameState.powerups.double;
-            }
-        }
-
-        function updateBossHealth() {
-            if (gameState.mode === 'boss') {
-                const healthPercent = (gameState.boss.currentHp / gameState.boss.maxHp) * 100;
-                document.getElementById('bossHp').style.width = healthPercent + '%';
-                document.getElementById('bossHpText').textContent = `${gameState.boss.currentHp}/${gameState.boss.maxHp} HP`;
-            }
-        }
-
-        function endGame() {
-            if (gameState.timerInterval) {
-                clearInterval(gameState.timerInterval);
-            }
-            
-            document.getElementById('gameArea').classList.add('hidden');
-            document.getElementById('gameOverScreen').classList.remove('hidden');
-            
-            const accuracy = gameState.totalAnswered > 0 ? Math.round((gameState.totalCorrect / gameState.totalAnswered) * 100) : 0;
-            
-            document.getElementById('finalScore').textContent = gameState.score;
-            document.getElementById('finalLevel').textContent = gameState.level;
-            document.getElementById('totalAnswered').textContent = gameState.totalAnswered;
-            document.getElementById('totalCorrect').textContent = gameState.totalCorrect;
-            document.getElementById('accuracy').textContent = accuracy + '%';
-            document.getElementById('maxStreak').textContent = gameState.maxStreak;
-            
-            if (accuracy >= 80) {
-                document.getElementById('gameOverEmoji').textContent = '🏆';
-                document.getElementById('gameOverTitle').textContent = 'Luar Biasa!';
-            } else if (accuracy >= 60) {
-                document.getElementById('gameOverEmoji').textContent = '🎉';
-                document.getElementById('gameOverTitle').textContent = 'Bagus!';
+            if (percentage >= 90) {
+                emoji = '🏆';
+                title = 'Luar Biasa!';
+                message = 'Kamu menguasai komposisi fungsi dengan sempurna!';
+            } else if (percentage >= 70) {
+                emoji = '🎉';
+                title = 'Bagus Sekali!';
+                message = 'Pemahaman komposisi fungsimu sudah sangat baik!';
+            } else if (percentage >= 50) {
+                emoji = '👍';
+                title = 'Cukup Baik!';
+                message = 'Terus berlatih untuk hasil yang lebih baik!';
             } else {
-                document.getElementById('gameOverEmoji').textContent = '💪';
-                document.getElementById('gameOverTitle').textContent = 'Terus Berlatih!';
+                emoji = '💪';
+                title = 'Semangat!';
+                message = 'Pelajari lagi materinya dan coba sekali lagi!';
             }
+            
+            document.getElementById('result-emoji').textContent = emoji;
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-message').textContent = message;
+            document.getElementById('final-score').textContent = `${score}/${totalQuestions * 20}`;
         }
 
         function restartGame() {
-            document.getElementById('gameOverScreen').classList.add('hidden');
-            startGame(gameState.mode);
-        }
-
-        function backToMenu() {
-            if (gameState.timerInterval) {
-                clearInterval(gameState.timerInterval);
-            }
-            if (gameState.countdownInterval) {
-                clearInterval(gameState.countdownInterval);
-            }
+            currentQuestion = 0;
+            score = 0;
+            selectedAnswer = null;
             
-            document.getElementById('gameArea').classList.add('hidden');
-            document.getElementById('gameOverScreen').classList.add('hidden');
-            document.getElementById('levelCompleteScreen').classList.add('hidden');
-            document.getElementById('gameMenu').classList.remove('hidden');
+            document.getElementById('score').textContent = '0';
+            document.getElementById('question-number').textContent = '1';
+            document.getElementById('game-area').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            
+            displayQuestion();
         }
 
-        // Initialize game
-        updateUI();
+        // Event Listeners
+        document.getElementById('next-btn').onclick = nextQuestion;
+
+        // Initialize with material section
+        showSection('material');
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97b7376067fece19',t:'MTc1NzI1ODcwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97c3211d62ec9c74',t:'MTc1NzM4MzYxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
